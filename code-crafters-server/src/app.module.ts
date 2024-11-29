@@ -1,10 +1,24 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { Module } from "@nestjs/common";
+import { MainModule } from "./modules";
+import { ConfigModule } from "@nestjs/config";
+import { EventEmitterModule } from "@nestjs/event-emitter";
+import { configuration } from "./config";
+import { DatabaseModule } from "./database";
+import { LoggerModule } from "./logger";
+import { AuthModule } from "./auth";
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    EventEmitterModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration]
+    }),
+    DatabaseModule,
+    LoggerModule,
+    AuthModule,
+    MainModule
+  ]
 })
-export class AppModule {}
+export class AppModule {
+}
