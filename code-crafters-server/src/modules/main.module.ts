@@ -2,14 +2,12 @@ import { Module } from "@nestjs/common";
 import { MailModule } from "./mail";
 import { UserModule } from "./user";
 import { AppCacheModule } from "./cache";
-import { SubmissionModule } from "./submission";
 
 @Module({
   imports: [
+    AppCacheModule,
     MailModule,
-    UserModule,
-    SubmissionModule,
-    AppCacheModule
+    UserModule
   ]
 })
 export class MainModule {

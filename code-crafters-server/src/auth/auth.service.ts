@@ -63,6 +63,10 @@ export class AuthService {
 
     await this.userService.updateUser({ id: user.id, refreshToken: tokens.refresh_token });
 
+    delete user.isBlocked;
+    delete user.refreshToken;
+    delete user.role;
+
     return {
       message: Messages.auth.loginSuccess,
       data: {

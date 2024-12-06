@@ -18,8 +18,29 @@ export class CacheService {
       return data as T;
     }
     const data = await cacheFn() as T;
-    this.set(key, stringify ? JSON.stringify(data) : data as string, ttl);
+    await this.set(key, stringify ? JSON.stringify(data) : data as string, ttl);
     return data;
+  }
+
+  async getKeysByPattern(pattern: string): Promise<string[]> {
+    let cursor = "0";
+    const keys: string[] = [];
+
+    do {
+      const [newCursor, result] = await this.redis.scan(cursor, "MATCH", pattern);
+      cursor = newCursor;
+      keys.push(...result);
+    } while (cursor !== "0");
+
+    return keys;
+  }
+
+  async delByPattern(pattern: string): Promise<void> {
+    const keys = await this.getKeysByPattern(pattern);
+    if (keys.length > 0) {
+      await Promise.all(keys.map(key => this.del(key)));
+      console.log(`Deleted keys matching pattern: ${pattern}`);
+    }
   }
 
   async get(key: string) {
@@ -34,7 +55,7 @@ export class CacheService {
     return this.redis.lpush(key, ...values);
   }
 
-  getAll(key: string) {
+  async getAll(key: string) {
     return this.redis.lrange(key, 0, -1);
 
   }
@@ -51,12 +72,12 @@ export class CacheService {
     return this.redis.llen(key);
   }
 
-  set(key: string, value: string | number | Buffer, ttl?: number) {
+  async set(key: string, value: string | number | Buffer, ttl?: number) {
     this.redis.expire(key, ttl);
     return this.redis.set(key, value);
   }
 
-  del(key: string) {
+  async del(key: string) {
     this.redis.del(key);
   }
 }

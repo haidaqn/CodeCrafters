@@ -1,11 +1,21 @@
 import { Module } from "@nestjs/common";
-import { MainModule } from "./modules";
+import {
+  CategoryModule,
+  ContestModule,
+  ContestParticipant,
+  ContestRanking,
+  MainModule,
+  ProblemModule,
+  SubmissionModule,
+  TestCaseModule
+} from "./modules";
 import { ConfigModule } from "@nestjs/config";
 import { EventEmitterModule } from "@nestjs/event-emitter";
 import { configuration } from "./config";
 import { DatabaseModule } from "./database";
 import { LoggerModule } from "./logger";
 import { AuthModule } from "./auth";
+import { LanguageModule } from "./modules/language/language.module";
 
 @Module({
   imports: [
@@ -17,6 +27,15 @@ import { AuthModule } from "./auth";
     DatabaseModule,
     LoggerModule,
     AuthModule,
+    CategoryModule,
+    ContestModule,
+    ProblemModule,
+    ContestParticipant,
+    ContestRanking,
+    LanguageModule,
+    ProblemModule,
+    SubmissionModule,
+    TestCaseModule,
     MainModule
   ]
 })

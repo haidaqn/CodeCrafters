@@ -3,7 +3,6 @@ import {AnimatePresence, motion} from 'framer-motion';
 import {AlignJustify, XIcon} from 'lucide-react';
 import {useEffect, useState} from 'react';
 import Link from 'next/link';
-import {LogoCollapse} from '@/special-assets';
 import {cn} from '@/lib/utils.ts';
 import {buttonVariants} from '@/components/ui/button.tsx';
 import {useTheme} from "@/components/providers/theme-provider.tsx";
@@ -21,9 +20,14 @@ const menuItem = [
     href: 'https://www.facebook.com/haidang02.03/',
   },
   {
-    id: 4,
+    id: 3,
     label: 'Login',
     href: '/auth/login',
+  },
+  {
+    id: 4,
+    label: 'Register',
+    href: '/auth/register',
   },
 ];
 
@@ -103,28 +107,29 @@ export function SiteHeader() {
           <Link href="/" className="text-md flex items-center">
             <div className="w-[150px]">logo ở đáy</div>
           </Link>
-          <Link
-            className={cn(
-              buttonVariants({variant: 'link'}),
-              'mr-2 text-sm',
-            )}
-            target='_blank'
-            href="https://www.facebook.com/thanglonguniversity"
-          >
-            Sponsor me
-          </Link>
-          <Link
-            className={cn(
-              buttonVariants({variant: 'link'}),
-              'mr-2 text-sm',
-            )}
-            target='_blank'
-            href="https://www.facebook.com/thanglonguniversity"
-          >
-            Social network
-          </Link>
+
 
           <div className="ml-auto hidden md:flex h-full items-center">
+            <Link
+              className={cn(
+                buttonVariants({variant: 'link'}),
+                'mr-2 text-sm',
+              )}
+              target='_blank'
+              href="https://github.com/haidaqn"
+            >
+              Github
+            </Link>
+            <Link
+              className={cn(
+                buttonVariants({variant: 'link'}),
+                'mr-2 text-sm',
+              )}
+              target='_blank'
+              href="https://www.facebook.com/haidang02.03/"
+            >
+              Social network
+            </Link>
             <Link
               className={cn(
                 buttonVariants({variant: 'default'}),
@@ -168,7 +173,7 @@ export function SiteHeader() {
         >
           <div className="container flex h-14 items-center justify-between">
             <Link className="text-md flex items-center" href="/">
-              <div className="w-[150px]"><LogoCollapse/></div>
+              <div className="w-[150px]">logo responsive</div>
             </Link>
 
             <button
@@ -192,7 +197,7 @@ export function SiteHeader() {
                 className="border-grey-dark border-b py-0.5 pl-6 md:border-none"
               >
                 <Link
-                  className={`hover:text-grey flex h-[var(--navigation-height)] w-full items-center text-xl transition-[color,transform] duration-300 md:translate-y-0 md:text-sm md:transition-colors ${
+                  className={`hover:text-grey hover:opacity-80 flex h-[var(--navigation-height)] w-full items-center text-xl transition-[color,transform] duration-300 md:translate-y-0 md:text-sm md:transition-colors ${
                     hamburgerMenuIsOpen ? '[&_a]:translate-y-0' : ''
                   }`}
                   href={item.href}
