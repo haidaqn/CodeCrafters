@@ -42,7 +42,7 @@ export class CategoryService {
         query.skip(skip).take(limit);
         const [categories, total] = await query.getManyAndCount();
 
-        this.logger.log(`Fetched ${categories.length} categories (Total: ${total})`);
+        this.logger.log(`Fetched ${cacheKey} categories (Total: ${total})`);
 
         const totalPages = Math.ceil(total / limit);
 
@@ -69,7 +69,7 @@ export class CategoryService {
     const categoryNew = this.categoryRepository.create({ name: createCategoryDto.name });
 
     if (!categoryNew) {
-      new Error(Messages.category.categoryNameExists);
+      throw new Error(Messages.common.somethingWentWrong);
     }
 
     await this.categoryRepository.save(categoryNew);
@@ -95,7 +95,6 @@ export class CategoryService {
     return {
       message: Messages.category.categoryDeleted
     };
-
   }
 
   async update(id: number, updateCategoryDto: CategoryDto) {
@@ -129,7 +128,7 @@ export class CategoryService {
     }
   }
 
-  private async findCategoryByID(id: number) {
+  async findCategoryByID(id: number) {
     try {
       return await this.categoryRepository.findOne({ where: { id } });
     } catch (error: any) {

@@ -1,9 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiQuery } from "@nestjs/swagger";
-import { JwtAuthGuard } from "../../auth";
+import { JwtAuthGuard, Payload } from "../../auth";
 import { ContestParticipantService } from "./contest-participant.service";
-import { Pagination } from "../../decorators";
+import { Pagination, ReqUser } from "../../decorators";
 import { PaginationDto } from "../../types/paging";
+import { CreateContestParticipantDTO, UpdateContestParticipantDTO } from "./contest-participant.dto";
 
 @Controller("contest-participant")
 @ApiBearerAuth()
@@ -17,29 +18,30 @@ export class ContestParticipantController {
 
   @Post("")
   public async create(
-    @Body() createContestParticipantDto: any
+    @Body() createContestParticipantDto: CreateContestParticipantDTO,
+    @ReqUser() user: Payload
   ) {
-    return await this.contestParticipantService.create(createContestParticipantDto);
+    return await this.contestParticipantService.create(user.id, createContestParticipantDto);
   }
 
   @Get(":id")
   public async get(
-    @Param("id") id: string
+    @Param("id") id: number
   ) {
     return await this.contestParticipantService.get(id);
   }
 
   @Patch(":id")
   public async update(
-    @Param("id") id: string,
-    @Body() updateContestParticipantDto: any
+    @Param("id") id: number,
+    @Body() updateContestParticipantDto: UpdateContestParticipantDTO
   ) {
     return await this.contestParticipantService.update(id, updateContestParticipantDto);
   }
 
   @Delete(":id")
   public async delete(
-    @Param("id") id: string
+    @Param("id") id: number
   ) {
     return await this.contestParticipantService.delete(id);
   }

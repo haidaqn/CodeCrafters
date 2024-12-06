@@ -4,6 +4,8 @@ import { JwtAuthGuard } from "../../auth";
 import { ProblemService } from "./problem.service";
 import { Pagination } from "../../decorators";
 import { PaginationDto } from "../../types/paging";
+import { CreateProblemDTO, UpdateProblemDTO } from "./problem.dto";
+import { AdminRequired } from "../user/decorators/permission.decorator";
 
 @Controller("problems")
 @ApiBearerAuth()
@@ -16,30 +18,33 @@ export class ProblemController {
   }
 
   @Post("")
+  @AdminRequired()
   public async create(
-    @Body() createProblemDto: any
+    @Body() createProblemDto: CreateProblemDTO
   ) {
     return await this.problemService.create(createProblemDto);
   }
 
   @Get(":id")
   public async get(
-    @Param("id") id: string
+    @Param("id") id: number
   ) {
     return await this.problemService.get(id);
   }
 
   @Patch(":id")
+  @AdminRequired()
   public async update(
-    @Param("id") id: string,
-    @Body() updateProblemDto: any
+    @Param("id") id: number,
+    @Body() updateProblemDto: UpdateProblemDTO
   ) {
     return await this.problemService.update(id, updateProblemDto);
   }
 
   @Delete(":id")
+  @AdminRequired()
   public async delete(
-    @Param("id") id: string
+    @Param("id") id: number
   ) {
     return await this.problemService.delete(id);
   }
@@ -55,6 +60,4 @@ export class ProblemController {
   ) {
     return await this.problemService.list(pagination);
   }
-
-
 }

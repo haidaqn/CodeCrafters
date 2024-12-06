@@ -4,6 +4,8 @@ import { JwtAuthGuard } from "../../auth";
 import { TestCaseService } from "./test-case.service";
 import { Pagination } from "../../decorators";
 import { PaginationDto } from "../../types/paging";
+import { CreateTestCaseDTO, UpdateTestCaseDTO } from "./test-case.dto";
+import { AdminRequired } from "../user/decorators/permission.decorator";
 
 @Controller("test-case")
 @ApiBearerAuth()
@@ -16,35 +18,40 @@ export class TestCaseController {
   }
 
   @Post("")
+  @AdminRequired()
   public async create(
-    @Body() createTestCaseDto: any
+    @Body() createTestCaseDto: CreateTestCaseDTO
   ) {
     return await this.testCaseService.create(createTestCaseDto);
   }
 
   @Get(":id")
+  @AdminRequired()
   public async get(
-    @Param("id") id: string
+    @Param("id") id: number
   ) {
     return await this.testCaseService.get(id);
   }
 
   @Patch(":id")
+  @AdminRequired()
   public async update(
-    @Param("id") id: string,
-    @Body() updateTestCaseDto: any
+    @Param("id") id: number,
+    @Body() updateTestCaseDto: UpdateTestCaseDTO
   ) {
     return await this.testCaseService.update(id, updateTestCaseDto);
   }
 
   @Delete(":id")
+  @AdminRequired()
   public async delete(
-    @Param("id") id: string
+    @Param("id") id: number
   ) {
     return await this.testCaseService.delete(id);
   }
 
   @Get()
+  @AdminRequired()
   @ApiQuery({ name: "page", required: false, type: Number })
   @ApiQuery({ name: "limit", required: false, type: Number })
   @ApiQuery({ name: "sortBy", required: false, type: String })

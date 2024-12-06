@@ -4,6 +4,8 @@ import { JwtAuthGuard } from "../../auth";
 import { ContestService } from "./contest.service";
 import { Pagination } from "../../decorators";
 import { PaginationDto } from "../../types/paging";
+import { CreateContestDTO, UpdateContestDTO } from "./contest.dto";
+import { AdminRequired } from "../user/decorators/permission.decorator";
 
 @Controller("contests")
 @ApiBearerAuth()
@@ -16,30 +18,33 @@ export class ContestController {
   }
 
   @Post("")
+  @AdminRequired()
   public async create(
-    @Body() createContestDto: any
+    @Body() createContestDto: CreateContestDTO
   ) {
     return await this.contestService.create(createContestDto);
   }
 
   @Get(":id")
   public async get(
-    @Param("id") id: string
+    @Param("id") id: number
   ) {
     return await this.contestService.get(id);
   }
 
   @Patch(":id")
+  @AdminRequired()
   public async update(
-    @Param("id") id: string,
-    @Body() updateContestDto: any
+    @Param("id") id: number,
+    @Body() updateContestDto: UpdateContestDTO
   ) {
     return await this.contestService.update(id, updateContestDto);
   }
 
   @Delete(":id")
+  @AdminRequired()
   public async delete(
-    @Param("id") id: string
+    @Param("id") id: number
   ) {
     return await this.contestService.delete(id);
   }
@@ -55,6 +60,4 @@ export class ContestController {
   ) {
     return await this.contestService.list(pagination);
   }
-
-
 }

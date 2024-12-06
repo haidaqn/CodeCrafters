@@ -5,6 +5,7 @@ import { LoggerService } from "../../logger";
 import { CacheService } from "../cache";
 import { PaginationDto } from "../../types/paging";
 import { ContestParticipant } from "./contest-participant.entity";
+import { CreateContestParticipantDTO, UpdateContestParticipantDTO } from "./contest-participant.dto";
 
 @Injectable()
 export class ContestParticipantService {
@@ -17,16 +18,16 @@ export class ContestParticipantService {
   ) {
   }
 
-  async create(createContestParticipantDto: any) {
+  async create(userID: number, createContestParticipantDto: CreateContestParticipantDTO) {
   }
 
-  async get(id: string) {
+  async get(id: number) {
   }
 
-  async update(id: string, updateContestParticipantDto: any) {
+  async update(id: number, updateContestParticipantDto: UpdateContestParticipantDTO) {
   }
 
-  async delete(id: string) {
+  async delete(id: number) {
   }
 
   async list(paginationDto: PaginationDto) {

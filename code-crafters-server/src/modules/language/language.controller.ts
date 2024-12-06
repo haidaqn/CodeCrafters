@@ -4,6 +4,8 @@ import { JwtAuthGuard } from "../../auth";
 import { LanguageService } from "./language.service";
 import { Pagination } from "../../decorators";
 import { PaginationDto } from "../../types/paging";
+import { CreateLanguageDTO, UpdateLanguageDTO } from "./language.dto";
+import { AdminRequired } from "../user/decorators/permission.decorator";
 
 @Controller("languages")
 @ApiBearerAuth()
@@ -16,30 +18,34 @@ export class LanguageController {
   }
 
   @Post("")
+  @AdminRequired()
   public async create(
-    @Body() createLanguageDto: any
+    @Body() createLanguageDto: CreateLanguageDTO
   ) {
     return await this.languageService.create(createLanguageDto);
   }
 
   @Get(":id")
+  @AdminRequired()
   public async get(
-    @Param("id") id: string
+    @Param("id") id: number
   ) {
     return await this.languageService.get(id);
   }
 
   @Patch(":id")
+  @AdminRequired()
   public async update(
-    @Param("id") id: string,
-    @Body() updateLanguageDto: any
+    @Param("id") id: number,
+    @Body() updateLanguageDto: UpdateLanguageDTO
   ) {
     return await this.languageService.update(id, updateLanguageDto);
   }
 
   @Delete(":id")
+  @AdminRequired()
   public async delete(
-    @Param("id") id: string
+    @Param("id") id: number
   ) {
     return await this.languageService.delete(id);
   }

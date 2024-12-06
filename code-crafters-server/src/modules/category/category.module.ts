@@ -13,7 +13,8 @@ import { UserModule } from "../user";
     forwardRef(() => UserModule)
   ],
   controllers: [CategoryController],
-  providers: [CategoryService, LoggerService, CacheService]
+  providers: [CategoryService, LoggerService, CacheService],
+  exports: [CategoryService]
 })
 export class CategoryModule {
 }

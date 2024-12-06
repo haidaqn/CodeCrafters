@@ -9,5 +9,4 @@ export * from "./problem";
 export * from "./test-case";
 export * from "./contest-participant";
 export * from "./contest";
-export * from "./contest-ranking";
 export * from "./problem";

@@ -6,11 +6,13 @@ import { UserModule } from "../user";
 import { CacheService } from "../cache";
 import { LoggerService } from "../../logger";
 import { TestCase } from "./test-case.entity";
+import { ProblemModule } from "../problem";
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([TestCase]),
-    forwardRef(() => UserModule)
+    forwardRef(() => UserModule),
+    forwardRef(() => ProblemModule)
   ],
   controllers: [TestCaseController],
   providers: [TestCaseService, LoggerService, CacheService]

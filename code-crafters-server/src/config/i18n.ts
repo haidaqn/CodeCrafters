@@ -45,6 +45,7 @@ export const Messages = {
     contestCreated: "Contest created successfully!",
     contestUpdated: "Contest updated successfully!",
     contestStarted: "Contest started successfully!",
+    contestDeleted: "Contest deleted successfully!",
     contestEnded: "Contest ended!",
     contestNotStarted: "Contest has not started yet!",
     contestAlreadyEnded: "Contest has already ended!",
@@ -77,19 +78,22 @@ export const Messages = {
     languageCreated: "Language created successfully!",
     languageUpdated: "Language updated successfully!",
     languageDeleted: "Language deleted successfully!",
-    languageUnsupported: "The selected language is not supported!"
+    languageUnsupported: "The selected language is not supported!",
+    languageExists: "Language name already exists!"
+  },
+  problem: {
+    problemNotFound: "Problem not found!",
+    problemCreated: "Problem created successfully!",
+    problemUpdated: "Problem updated successfully!",
+    problemDeleted: "Problem deleted successfully!"
   },
   common: {
     actionNotPermitted: "Action not permitted!",
     somethingWentWrong: "Something went wrong, please try again later!",
     invalidRequest: "Invalid request!",
     accessDenied: "Access denied!",
-    resourceNotFound: "Resource not found!",
-    resourceCreated: "Resource created successfully!",
-    resourceUpdated: "Resource updated successfully!",
-    resourceDeleted: "Resource deleted successfully!",
     success: "Operation successful!",
     failure: "Operation failed!",
-    alreadyExists: "This resource already exists!"
+    alreadyExists: "This resource already exists!",
   }
 };
