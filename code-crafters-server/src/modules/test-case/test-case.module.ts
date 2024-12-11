@@ -15,7 +15,8 @@ import { ProblemModule } from "../problem";
     forwardRef(() => ProblemModule)
   ],
   controllers: [TestCaseController],
-  providers: [TestCaseService, LoggerService, CacheService]
+  providers: [TestCaseService, LoggerService, CacheService],
+  exports: [TestCaseService]
 })
 export class TestCaseModule {
 }

@@ -15,6 +15,9 @@ export class QueueService {
   }
 
   async enqueueSubmitCode(submitData: any) {
-    await this.submitQueue.add("submitCode", submitData);
+    await this.submitQueue.add("submitCode", submitData, {
+      removeOnComplete: true, // Xóa job khỏi queue khi hoàn thành
+      removeOnFail: false // Lưu thông tin job khi thất bại
+    });
   }
 }

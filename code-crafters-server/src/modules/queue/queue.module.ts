@@ -1,9 +1,13 @@
-import { Module } from "@nestjs/common";
+import { forwardRef, Module } from "@nestjs/common";
 import { BullModule } from "@nestjs/bullmq";
 import { ConfigService } from "@nestjs/config";
 import * as consumers from "./consumers";
+import { SubmitCodeConsumer } from "./consumers";
 import { QueueService } from "./queue.service";
 import { EmailService } from "../mail";
+import { DockerService } from "../../docker";
+import { LoggerService } from "../../logger";
+import { SubmissionModule } from "../submission";
 
 @Module({
   imports: [
@@ -20,9 +24,16 @@ import { EmailService } from "../mail";
     BullModule.registerQueue(
       { name: "email" },
       { name: "submit" }
-    )
+    ),
+    forwardRef(() => SubmissionModule)
   ],
-  providers: [...Object.values(consumers), QueueService, EmailService],
+  providers: [
+    ...Object.values(consumers),
+    QueueService,
+    EmailService,
+    DockerService,
+    LoggerService
+  ],
   exports: [QueueService]
 })
 export class QueueModule {

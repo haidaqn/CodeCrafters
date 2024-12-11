@@ -1,12 +1,15 @@
 import { Module } from "@nestjs/common";
 import {
+  AppCacheModule,
   CategoryModule,
   ContestModule,
   ContestParticipant,
-  MainModule,
+  LanguageModule,
+  MailModule,
   ProblemModule,
   SubmissionModule,
-  TestCaseModule
+  TestCaseModule,
+  UserModule
 } from "./modules";
 import { ConfigModule } from "@nestjs/config";
 import { EventEmitterModule } from "@nestjs/event-emitter";
@@ -14,7 +17,9 @@ import { configuration } from "./config";
 import { DatabaseModule } from "./database";
 import { LoggerModule } from "./logger";
 import { AuthModule } from "./auth";
-import { LanguageModule } from "./modules/language/language.module";
+import { QueueModule } from "./modules/queue";
+import { ScheduleModule } from "@nestjs/schedule";
+import { CronModule } from "./modules/cron";
 
 @Module({
   imports: [
@@ -34,7 +39,12 @@ import { LanguageModule } from "./modules/language/language.module";
     ProblemModule,
     SubmissionModule,
     TestCaseModule,
-    MainModule
+    QueueModule,
+    AppCacheModule,
+    MailModule,
+    UserModule,
+    ScheduleModule.forRoot(),
+    CronModule
   ]
 })
 export class AppModule {

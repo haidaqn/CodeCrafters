@@ -13,7 +13,8 @@ import { Language } from "./language.entity";
     forwardRef(() => UserModule)
   ],
   controllers: [LanguageController],
-  providers: [LanguageService, LoggerService, CacheService]
+  providers: [LanguageService, LoggerService, CacheService],
+  exports: [LanguageService]
 })
 export class LanguageModule {
 }

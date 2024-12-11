@@ -147,4 +147,19 @@ export class TestCaseService {
       this.logger.error(error.message);
     }
   }
+
+  async getTestCases(problemID: number) {
+
+    const cacheKey = `test-case:problemID:${problemID}`;
+
+    return await this.cache.auto(cacheKey, true, 30, async () => {
+      const testCases = await this.testCaseRepository.find({ where: { problemID, isActivated: true } });
+
+      if (!testCases || testCases.length === 0) {
+        throw new NotFoundException(Messages.problem.problemNotFound);
+      }
+
+      return testCases;
+    });
+  }
 }
