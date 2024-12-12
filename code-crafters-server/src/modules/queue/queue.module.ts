@@ -2,7 +2,6 @@ import { forwardRef, Module } from "@nestjs/common";
 import { BullModule } from "@nestjs/bullmq";
 import { ConfigService } from "@nestjs/config";
 import * as consumers from "./consumers";
-import { SubmitCodeConsumer } from "./consumers";
 import { QueueService } from "./queue.service";
 import { EmailService } from "../mail";
 import { DockerService } from "../../docker";
@@ -11,6 +10,7 @@ import { SubmissionModule } from "../submission";
 
 @Module({
   imports: [
+    forwardRef(() => SubmissionModule),
     BullModule.forRootAsync({
       useFactory: async (configService: ConfigService) => ({
         connection: {
@@ -24,8 +24,7 @@ import { SubmissionModule } from "../submission";
     BullModule.registerQueue(
       { name: "email" },
       { name: "submit" }
-    ),
-    forwardRef(() => SubmissionModule)
+    )
   ],
   providers: [
     ...Object.values(consumers),

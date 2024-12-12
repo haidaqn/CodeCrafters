@@ -4,15 +4,18 @@ import { DockerService } from "../../../docker";
 import { STATUS_SUBMISSION, SubmitCodeJobData, SubmitCodeResult } from "../../../types";
 import { LoggerService } from "../../../logger";
 import { SubmissionGateway, SubmissionService } from "../../submission";
+import { forwardRef, Inject } from "@nestjs/common";
 
 @Processor("submit")
 export class SubmitCodeConsumer extends WorkerHost {
 
   constructor(
-    private readonly dockerService: DockerService,
-    private readonly logger: LoggerService,
+    @Inject(forwardRef(() => SubmissionService))
+    private readonly submissionService: SubmissionService,
+    @Inject(forwardRef(() => SubmissionGateway))
     private readonly gateway: SubmissionGateway,
-    private readonly submission: SubmissionService
+    private readonly dockerService: DockerService,
+    private readonly logger: LoggerService
   ) {
     super();
   }
@@ -40,11 +43,11 @@ export class SubmitCodeConsumer extends WorkerHost {
         maxMemoryUsed = Math.max(maxMemoryUsed, result.memoryUsed);
         if (!passed) allTestCasesPassed = false;
 
-        // this.gateway.sendTestCaseResult(clientId, {
-        //   submissionId,
-        //   maxMemoryUsed,
-        //   passed
-        // });
+        this.gateway.sendTestCaseResult(clientId, {
+          submissionId,
+          maxMemoryUsed,
+          passed
+        });
 
       } catch (error: any) {
         allTestCasesPassed = false;
@@ -54,16 +57,16 @@ export class SubmitCodeConsumer extends WorkerHost {
 
     const statusSubmit = allTestCasesPassed ? STATUS_SUBMISSION.AC : STATUS_SUBMISSION.WA;
 
-    // await this.submissionService.update(submissionId, {
-    //   status: statusSubmit,
-    //   memoryUsed: maxMemoryUsed
-    // });
+    await this.submissionService.update(submissionId, {
+      status: statusSubmit,
+      memoryUsed: maxMemoryUsed
+    });
 
-    // this.gateway.sendSubmissionResult(clientId, {
-    //   submissionId,
-    //   maxMemoryUsed,
-    //   statusSubmit
-    // });
+    this.gateway.sendSubmissionResult(clientId, {
+      submissionId,
+      maxMemoryUsed,
+      statusSubmit
+    });
   }
 
   @OnWorkerEvent("active")
