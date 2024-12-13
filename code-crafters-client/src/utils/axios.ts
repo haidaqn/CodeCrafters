@@ -6,7 +6,7 @@ import {HOST_API} from '@/global-config';
 
 //----------------------------------------------------------------------
 
-const axiosInstance = axios.create({baseURL: HOST_API})
+const axiosInstance = axios.create({baseURL: HOST_API + 'api'})
 
 axiosInstance.interceptors.request.use(
   (config) => {
@@ -26,7 +26,8 @@ axiosInstance.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       if (typeof window !== 'undefined') {
         const router = useRouter()
-        router.push('/login')
+        router.push('/login').then(r => {
+        })
       }
     }
     return Promise.reject(
@@ -39,9 +40,12 @@ export default axiosInstance
 
 // ----------------------------------------------------------------------
 
+const VERSION_PREFIX = '/v1';
+
 export const endpoints = {
   auth: {
-    login: '/login',
-    register: '/register'
+    login: `${VERSION_PREFIX}/auth/login`,
+    register: `${VERSION_PREFIX}/auth/register`,
+    sso: (serviceId: string) => `${VERSION_PREFIX}/auth/oauth/${serviceId}`
   },
 }

@@ -1,6 +1,5 @@
-
 export interface LoginForm {
-  userCode: string;
+  email: string;
   password: string;
 }
 

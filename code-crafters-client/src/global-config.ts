@@ -1,1 +1,1 @@
-export const HOST_API = process.env.NEXT_PUBLIC_API_DOMAIN;
+export const HOST_API = process.env.VITE_API_BASE;
