@@ -21,7 +21,9 @@ export const Messages = {
     refreshTokenInvalid: "Refresh token is invalid!",
     wrongPassword: "Wrong password!",
     updateInfo: "Update info successful!",
-    logout: "Logout successful!"
+    logout: "Logout successful!",
+    error: "Email or username already exists.",
+    emailUsed: "EMAIL_USED"
   },
   category: {
     categoryNotFound: "Category not found!",
@@ -94,6 +96,6 @@ export const Messages = {
     accessDenied: "Access denied!",
     success: "Operation successful!",
     failure: "Operation failed!",
-    alreadyExists: "This resource already exists!",
+    alreadyExists: "This resource already exists!"
   }
 };

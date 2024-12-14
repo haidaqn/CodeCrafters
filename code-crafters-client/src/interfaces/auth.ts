@@ -3,6 +3,13 @@ export interface LoginForm {
   password: string;
 }
 
+export interface RegisterForm {
+  fullName: string;
+  email: string;
+  password: string;
+  username: string;
+}
+
 
 export interface Tokens {
   access_token: string;

@@ -6,7 +6,7 @@ import {HOST_API} from '@/global-config';
 
 //----------------------------------------------------------------------
 
-const axiosInstance = axios.create({baseURL: HOST_API + 'api'})
+const axiosInstance = axios.create({baseURL: HOST_API})
 
 axiosInstance.interceptors.request.use(
   (config) => {
@@ -46,6 +46,6 @@ export const endpoints = {
   auth: {
     login: `${VERSION_PREFIX}/auth/login`,
     register: `${VERSION_PREFIX}/auth/register`,
-    sso: (serviceId: string) => `${VERSION_PREFIX}/auth/oauth/${serviceId}`
+    sso: (serviceId: string) => `${VERSION_PREFIX}/auth/oauth/${serviceId}`,
   },
-}
+};

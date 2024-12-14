@@ -5,8 +5,9 @@ import {IPaging} from "@/interfaces/paging";
 export interface IApiResponse<T> {
   data: T;
   paging: IPaging;
-  total: number;
-  filter: Record<string, never>;
+  message: string;
+  path:string;
+  status: number
 }
 
 export interface ErrorResponse {

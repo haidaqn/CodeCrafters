@@ -1,6 +1,8 @@
 import type {Metadata} from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import React from "react";
+import Toaster from "@/components/ui/sonner.tsx";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -25,10 +27,24 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+    <head>
+      <meta charSet="UTF-8"/>
+      <link rel="icon" type="image/svg+xml" href="/logo-removebg-preview.png"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <title>Code Crafters</title>
+    </head>
     <body
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
     {children}
+    <Toaster closeButton richColors toastOptions={{
+      classNames: {
+        error: 'bg-red-400',
+        success: 'bg-green-400',
+        warning: 'bg-yellow-400',
+        info: 'bg-blue-400',
+      },
+    }}/>
     </body>
     </html>
   );

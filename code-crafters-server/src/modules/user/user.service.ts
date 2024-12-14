@@ -2,9 +2,10 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { LoggerService } from "../../logger";
 import { User } from "./user.entity";
-import { Repository } from "typeorm";
+import { LessThanOrEqual, MoreThan, Repository } from "typeorm";
 import { createUser, UpdateUser, validateUser } from "./user.dto";
 import { compare, hashSync } from "bcrypt";
+import { ROLE } from "../../types";
 
 @Injectable()
 export class UserService {
@@ -61,8 +62,38 @@ export class UserService {
     return await this.userRepository.findOne({ where: [{ email }, { username }] });
   }
 
+  async findByGoogleId(googleId: string) {
+    return await this.userRepository.findOne({ where: { googleId: googleId } });
+  }
+
+  async findByEmail(email: string) {
+    return await this.userRepository.findOne({ where: { email: email } });
+  }
+
+  async findByEmailAndCode(email: string, code: string) {
+    return await this.userRepository.findOne({ where: { email, code } });
+  }
+
+  async findUserRemove() {
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+
+    const users = await this.userRepository.find({
+      where: {
+        code: MoreThan(""),
+        emailVerified: false,
+        createdAt: LessThanOrEqual(fiveMinutesAgo),
+        role: ROLE.USER
+      }
+    });
+    return await this.userRepository.remove(users);
+  }
+
   async findByID(id: number) {
     return await this.userRepository.findOne({ where: { id } });
+  }
+
+  async findByCode(code: string) {
+    return await this.userRepository.findOne({ where: { code } });
   }
 
   async validateUser(loginDto: validateUser) {

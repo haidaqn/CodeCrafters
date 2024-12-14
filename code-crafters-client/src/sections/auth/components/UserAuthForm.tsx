@@ -39,7 +39,11 @@ export default function UserAuthForm({className, ...props}: UserAuthFormProps) {
   }
 
   const finalizeLogin = async (response: any) => {
+
+
+
   }
+
 
   useEffect(() => {
   }, [])

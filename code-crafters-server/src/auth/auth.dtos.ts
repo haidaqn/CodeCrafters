@@ -1,6 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MinLength } from "class-validator";
 import { Messages } from "../config";
+import { IsOptionalNonNullable } from "../decorators";
+import { Transform } from "class-transformer";
 
 export class LoginDto {
   @ApiProperty({
@@ -76,6 +78,55 @@ export class RegisterDto {
   phone?: string;
 }
 
+export class VerifyUserDto {
+  @IsNotEmpty({
+    message: "EMAIL_REQUIRED"
+  })
+  @IsEmail({}, {
+    message: "INVALID_EMAIL"
+  })
+  @ApiProperty({
+    type: String,
+    default: "example@gmail.com"
+  })
+  @Transform(({ value }) => value.toString().toLowerCase())
+  email: string;
+
+  @IsNotEmpty({
+    message: "CODE_REQUIRED"
+  })
+  @IsString({
+    message: "INVALID_CODE"
+  })
+  @ApiProperty({
+    type: String,
+    default: "123456"
+  })
+  code: string;
+}
+
+
+export class OauthSignInDto {
+  @ApiProperty()
+  @IsString()
+  @IsOptionalNonNullable()
+  code?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptionalNonNullable()
+  access_token?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptionalNonNullable()
+  id_token?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptionalNonNullable()
+  redirect_uri?: string;
+}
 
 export class forgotPasswordDto {
   @ApiProperty({})

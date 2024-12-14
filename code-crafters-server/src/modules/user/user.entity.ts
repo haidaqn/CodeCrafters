@@ -31,6 +31,15 @@ export class User extends BaseEntityDefault {
   @Column({ type: "text", nullable: true })
   refreshToken: string;
 
+  @Column({ type: "boolean", default: false })
+  emailVerified: boolean;
+
+  @Column({ type: "varchar", length: 10, nullable: true })
+  code: string;
+
+  @Column({ type: "varchar", length: 255, nullable: true, default: "" })
+  googleId: string;
+
   @Column({
     type: "enum",
     enum: ROLE,

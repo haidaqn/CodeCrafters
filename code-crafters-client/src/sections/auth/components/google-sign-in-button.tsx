@@ -27,10 +27,9 @@ function GoogleSignInButton(props: GoogleSignInButtonProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const googleLogin = useGoogleLogin({
     flow: "auth-code",
-    redirect_uri: typeof window !== 'undefined'
-      ? window.location.origin + '/oauth/google'
-      : '',
+    redirect_uri: location.origin + '/oauth/google',
     onSuccess: tokenResponse => {
+      console.log("tokenResponse", tokenResponse)
       const code = tokenResponse.code;
       setLoading(true);
       authApi.authSso('google', {
@@ -53,7 +52,6 @@ function GoogleSignInButton(props: GoogleSignInButtonProps) {
   useGoogleOneTapLogin({
     onSuccess: credentialResponse => {
       const {credential} = credentialResponse;
-
       authApi.authSso('google', {
         access_token: credential,
         redirect_uri: location.origin + '/oauth/google',

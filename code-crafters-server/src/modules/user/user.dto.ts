@@ -9,6 +9,9 @@ export interface createUser {
   password: string;
   fullName: string;
   phone?: string;
+  googleId?: string;
+  emailVerified?: boolean;
+  code?: string;
 }
 
 export interface UpdateUser {

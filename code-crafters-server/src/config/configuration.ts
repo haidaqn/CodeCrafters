@@ -1,4 +1,4 @@
-import * as process from 'process';
+import * as process from "process";
 
 export const configuration = () => ({
   db: {
@@ -14,6 +14,10 @@ export const configuration = () => ({
       secret: process.env.JWT_SECRET,
       refreshSecret: process.env.JWT_REFRESH_SECRET,
       expiresIn: process.env.EXPIRESIN
+    },
+    google: {
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET
     }
   },
   mail: {

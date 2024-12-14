@@ -1,20 +1,24 @@
-import { HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import {
   ChangePasswordDto,
   forgotPasswordDto,
   LoginDto,
+  OauthSignInDto,
   Payload,
   RegisterDto,
   SignUser,
-  UpdateInfoDto
+  UpdateInfoDto,
+  VerifyUserDto
 } from "./auth.dtos";
 import { Messages } from "../config";
 import { UserService } from "../modules";
 import { MailerService } from "@nestjs-modules/mailer";
 import { JwtService } from "@nestjs/jwt";
-import { randomPassword } from "../utils";
+import { randomPassword, randomString } from "../utils";
 import { hashSync } from "bcrypt";
 import { ConfigService } from "@nestjs/config";
+import { google, oauth2_v2 } from "googleapis";
+import { QuerySsoUser } from "../types";
 
 @Injectable()
 export class AuthService {
@@ -72,8 +76,7 @@ export class AuthService {
       data: {
         tokens,
         user
-      },
-      status: HttpStatus.OK
+      }
     };
 
   }
@@ -82,18 +85,33 @@ export class AuthService {
     const user = await this.userService.findByUser(registerDto.email, registerDto.username);
 
     if (user) {
-      throw new Error(Messages.auth.emailOrUserName);
+      throw new Error(Messages.auth.error);
     }
 
-    const newUser = await this.userService.createUsers(registerDto);
+    const code = await this.randomCode();
+
+    const newUser = await this.userService.createUsers({ ...registerDto, code });
 
     if (!newUser) {
       throw new Error(Messages.auth.registerFailed);
     }
+    const html = `
+      Your account has been successfully created. Use the code below to activate your account:
+      <br/><b>${code}</b>
+      <br/>Note: This code is valid for 5 minutes only.
+    `;
+    const subject = "Account Activation Code - CODE CRAFTER!!";
+
+    const send = {
+      to: registerDto.email,
+      html,
+      subject
+    };
+
+    await this.mailService.sendMail(send);
 
     return {
-      message: Messages.auth.registerSuccess,
-      status: HttpStatus.OK
+      message: Messages.auth.registerSuccess
     };
   }
 
@@ -179,6 +197,95 @@ export class AuthService {
     };
   }
 
+  async oauthLogin(serviceID: string, data: OauthSignInDto) {
+    const createUserBySSO = async (query: QuerySsoUser, payload: { fullName: string; email: string }) => {
+      const existingUser = await this.userService.findByGoogleId(query.googleId);
+      if (!existingUser) {
+        const checkUserEmail = await this.userService.findByEmail(payload.email);
+        if (checkUserEmail) throw new HttpException(Messages.auth.emailUsed, HttpStatus.BAD_REQUEST);
+        const newUser = await this.userService.createUsers({
+          email: payload.email,
+          fullName: payload.fullName,
+          password: "",
+          googleId: query.googleId,
+          username: "",
+          emailVerified: true
+        });
+        if (!newUser) {
+          throw new Error(Messages.auth.registerFailed);
+        }
+        return newUser;
+      } else return existingUser;
+    };
+    switch (serviceID) {
+      case "google":
+        const {
+          redirect_uri,
+          code,
+          access_token
+        } = data;
+        const googleConfig = this.config.get("auth.google");
+        const oauth2Client = new google.auth.OAuth2(googleConfig.client_id, googleConfig.client_secret, redirect_uri);
+        const oauth2 = google.oauth2({
+          auth: oauth2Client,
+          version: "v2"
+        });
+        let userInfo: oauth2_v2.Schema$Userinfo;
+        if (code) {
+          const { tokens } = await oauth2Client.getToken(code);
+          oauth2Client.setCredentials(tokens);
+          userInfo = (await oauth2.userinfo.get()).data;
+        } else if (access_token) {
+          const ticket = await oauth2Client.verifyIdToken({
+            idToken: access_token,
+            audience: googleConfig.client_id
+          });
+          const payload = ticket.getPayload();
+          userInfo = {
+            id: payload?.sub,
+            email: payload?.email,
+            verified_email: payload?.email_verified,
+            picture: payload?.picture,
+            name: payload?.name,
+            given_name: payload?.given_name,
+            family_name: payload?.family_name
+          };
+        } else {
+          throw new HttpException("MISSING_CREDENTIALS", HttpStatus.FORBIDDEN);
+        }
+        return await createUserBySSO({
+          googleId: userInfo.id
+        }, {
+          email: userInfo.email,
+          fullName: userInfo.name
+        });
+      default:
+        throw new HttpException("INVALID_OAUTH_SERVICE", HttpStatus.FORBIDDEN);
+    }
+  }
+
+  async verifyAccount(verify: VerifyUserDto) {
+    const { email, code } = verify;
+
+    const user = await this.userService.findByEmail(email);
+
+    if (!user) throw new HttpException(Messages.auth.notFound, HttpStatus.BAD_REQUEST);
+
+    const verificationCode = await this.userService.findByEmailAndCode(email, code);
+
+    if (!verificationCode) return false;
+
+    user.emailVerified = true;
+    user.code = "";
+
+    await user.save();
+
+    return {
+      message: "EMAIL_VERIFIED",
+      status: HttpStatus.OK
+    };
+  }
+
   async updateInfo(
     updateInfo: UpdateInfoDto, user: Payload
   ) {
@@ -197,6 +304,14 @@ export class AuthService {
 
   }
 
+  jwtSign(User: SignUser) {
+    return {
+      access_token: this.signUser(User),
+      refresh_token: this.getRefreshToken(User)
+    };
+  }
+  // private function
+
   private signUser(User: SignUser) {
     return this.jwtService.sign(User);
   }
@@ -208,10 +323,14 @@ export class AuthService {
     });
   }
 
-  private jwtSign(User: SignUser) {
-    return {
-      access_token: this.signUser(User),
-      refresh_token: this.getRefreshToken(User)
-    };
+  private async randomCode() {
+    let valid = false;
+    let verificationCode: string;
+    while (!valid) {
+      verificationCode = randomString().toUpperCase();
+      const user = await this.userService.findByCode(verificationCode);
+      valid = !user;
+    }
+    return verificationCode;
   }
 }
