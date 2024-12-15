@@ -6,6 +6,7 @@ import {
   OauthSignInDto,
   Payload,
   RegisterDto,
+  ResendEmailDto,
   SignUser,
   UpdateInfoDto,
   VerifyUserDto
@@ -19,6 +20,7 @@ import { hashSync } from "bcrypt";
 import { ConfigService } from "@nestjs/config";
 import { google, oauth2_v2 } from "googleapis";
 import { QuerySsoUser } from "../types";
+import axios from "axios";
 
 @Injectable()
 export class AuthService {
@@ -95,6 +97,7 @@ export class AuthService {
     if (!newUser) {
       throw new Error(Messages.auth.registerFailed);
     }
+
     const html = `
       Your account has been successfully created. Use the code below to activate your account:
       <br/><b>${code}</b>
@@ -111,12 +114,12 @@ export class AuthService {
     await this.mailService.sendMail(send);
 
     return {
-      message: Messages.auth.registerSuccess
+      message: Messages.auth.verify
     };
   }
 
   async forgotPassword(forgetPasswordDto: forgotPasswordDto) {
-    const user = await this.userService.findByUser(forgetPasswordDto.account, forgetPasswordDto.account);
+    const user = await this.userService.findByEmail(forgetPasswordDto.email);
 
     if (!user) {
       throw new Error(Messages.auth.notFound);
@@ -128,11 +131,11 @@ export class AuthService {
 
     await this.userService.updateUser({ id: user.id, password: passwordHash });
 
-    const html = `Your account is ${forgetPasswordDto.account} \nYour password is ${newPassword}`;
+    const html = `Your account is ${forgetPasswordDto.email} \nYour password is ${newPassword}`;
     const subject = "Re-issue password CODE CRAFTER!!";
 
     const send = {
-      to: forgetPasswordDto.account,
+      to: forgetPasswordDto.email,
       html,
       subject
     };
@@ -140,7 +143,7 @@ export class AuthService {
     await this.mailService.sendMail(send);
 
     return {
-      message: Messages.auth.passwordChanged
+      message: "New password has been sent to your email please check!"
     };
 
   }
@@ -273,7 +276,9 @@ export class AuthService {
 
     const verificationCode = await this.userService.findByEmailAndCode(email, code);
 
-    if (!verificationCode) return false;
+    if (!verificationCode) {
+      throw new HttpException(Messages.auth.invalidCode, HttpStatus.BAD_REQUEST);
+    }
 
     user.emailVerified = true;
     user.code = "";
@@ -284,6 +289,51 @@ export class AuthService {
       message: "EMAIL_VERIFIED",
       status: HttpStatus.OK
     };
+  }
+
+  async resendEmail(resendEmailDto: ResendEmailDto) {
+    const { email, captcha } = resendEmailDto;
+
+    const { secretKey } = this.config.get("recaptcha");
+
+    const user = await this.userService.findByEmail(email);
+    if (!user) throw new HttpException(Messages.auth.emailUsed, HttpStatus.BAD_REQUEST);
+    if (user.emailVerified) throw new HttpException(Messages.auth.emailUsed, HttpStatus.FORBIDDEN);
+
+    try {
+      const verify = await axios.get(`https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${captcha}`);
+      if (!verify.data.success) new HttpException("INVALID VERIFICATION", HttpStatus.FORBIDDEN);
+
+      const code = await this.randomCode();
+
+      const html = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
+          <h2 style="color: #0056b3;">Activate Your Account</h2>
+          <p>Dear User,</p>
+          <p>We noticed that you requested to resend your activation code. Please use the code below to activate your account:</p>
+          <p style="font-size: 1.2rem; font-weight: bold; color: #0056b3;">${code}</p>
+          <p><b>Note:</b> This code is valid for <span style="color: #d9534f;">5 minutes</span> only.</p>
+          <p>If you did not request this email, please ignore it or contact our support team for assistance.</p>
+          <p>Best regards,</p>
+          <p><strong>The Code Crafter Team</strong></p>
+        </div>
+      `;
+      const subject = "Your Account Activation Code";
+      const send = {
+        to: email,
+        html,
+        subject
+      };
+
+      await this.mailService.sendMail(send);
+
+      return {
+        message: "VERIFICATION EMAIL SENT"
+      };
+    } catch (error: any) {
+      if (!(error instanceof HttpException)) throw new HttpException("INVALID VERIFICATION", HttpStatus.FORBIDDEN);
+      throw error;
+    }
   }
 
   async updateInfo(
@@ -310,6 +360,7 @@ export class AuthService {
       refresh_token: this.getRefreshToken(User)
     };
   }
+
   // private function
 
   private signUser(User: SignUser) {

@@ -10,6 +10,16 @@ export interface RegisterForm {
   username: string;
 }
 
+export interface VerifyAccount {
+  email: string
+  code: string
+}
+
+export interface ResendEmail {
+  email: string
+  captcha: string
+}
+
 
 export interface Tokens {
   access_token: string;

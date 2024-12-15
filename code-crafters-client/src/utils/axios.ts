@@ -46,6 +46,9 @@ export const endpoints = {
   auth: {
     login: `${VERSION_PREFIX}/auth/login`,
     register: `${VERSION_PREFIX}/auth/register`,
+    forgot: `${VERSION_PREFIX}/auth/forgot-password`,
+    verify: `${VERSION_PREFIX}/auth/verify`,
+    resend: `${VERSION_PREFIX}/auth/resend`,
     sso: (serviceId: string) => `${VERSION_PREFIX}/auth/oauth/${serviceId}`,
   },
 };

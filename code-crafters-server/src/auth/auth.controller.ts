@@ -8,6 +8,7 @@ import {
   Payload,
   refreshTokenDto,
   RegisterDto,
+  ResendEmailDto,
   UpdateInfoDto,
   VerifyUserDto
 } from "./auth.dtos";
@@ -90,6 +91,13 @@ export class AuthController {
     @ReqUser() user: Payload
   ) {
     return await this.authService.changePassword(changePasswordDto, user);
+  }
+
+  @Post("resend")
+  public async resendEmail(
+    @Body() resendEmailDto: ResendEmailDto
+  ) {
+    return await this.authService.resendEmail(resendEmailDto);
   }
 
   @Post("update-info")

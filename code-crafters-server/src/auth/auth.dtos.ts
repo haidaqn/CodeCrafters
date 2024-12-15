@@ -105,6 +105,16 @@ export class VerifyUserDto {
   code: string;
 }
 
+export class ResendEmailDto {
+  @IsString()
+  @IsEmail({}, {})
+  @Transform(({ value }) => value.toString().toLowerCase())
+  email: string;
+
+  @IsString()
+  @IsNotEmpty({})
+  captcha: string;
+}
 
 export class OauthSignInDto {
   @ApiProperty()
@@ -133,8 +143,8 @@ export class forgotPasswordDto {
   @IsNotEmpty({
     message: Messages.auth.emailOrUserName
   })
-  @IsString({ message: "Invalid string" })
-  account: string;
+  @IsString({ message: "Invalid string 123" })
+  email: string;
 }
 
 export class ChangePasswordDto {

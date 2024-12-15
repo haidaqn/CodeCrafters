@@ -36,6 +36,7 @@
     "@nestjs/typeorm": "^10.0.2",
     "@nestjs/websockets": "^10.4.13",
     "@songkeys/nestjs-redis": "^10.0.0",
+    "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "bullmq": "^5.31.2",
     "class-transformer": "^0.5.1",

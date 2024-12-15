@@ -7,6 +7,7 @@ import {authApi} from "@/api/authApi.ts";
 import {toast} from "sonner";
 import {Button} from "@/components/ui/button.tsx";
 import {Icons} from "@/components/ui/icons.tsx";
+import {location} from "@/config";
 
 
 //-----------------------------------------------------------------------------------------------
@@ -27,9 +28,8 @@ function GoogleSignInButton(props: GoogleSignInButtonProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const googleLogin = useGoogleLogin({
     flow: "auth-code",
-    redirect_uri: location.origin + '/oauth/google',
+    redirect_uri: location + '/oauth/google',
     onSuccess: tokenResponse => {
-      console.log("tokenResponse", tokenResponse)
       const code = tokenResponse.code;
       setLoading(true);
       authApi.authSso('google', {
@@ -54,7 +54,7 @@ function GoogleSignInButton(props: GoogleSignInButtonProps) {
       const {credential} = credentialResponse;
       authApi.authSso('google', {
         access_token: credential,
-        redirect_uri: location.origin + '/oauth/google',
+        redirect_uri: location + '/oauth/google',
       }).then(props.finalizeLogin).catch(err => {
         toast?.error(err?.message || 'AN_ERROR_HAS_OCCURRED')
       }).finally(() => {

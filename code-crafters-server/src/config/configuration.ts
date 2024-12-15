@@ -26,6 +26,10 @@ export const configuration = () => ({
     mail_host: process.env.MAIL_HOST,
     mail_port: process.env.MAIL_PORT
   },
+  recaptcha: {
+    siteKey: process.env.RECAPTCHA_SITE_KEY,
+    secretKey: process.env.RECAPTCHA_SECRET_KEY
+  },
   redis: {
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT

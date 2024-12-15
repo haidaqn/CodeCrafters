@@ -25,12 +25,11 @@ export const VerifySchema = z.object({
   code: z
     .string()
     .length(6, {message: 'Code must be exactly 6 characters'})
+    .optional(),
+  captcha: z.string().optional()
 });
 
-export const ResendSchema = z.object({
-  email: z
-    .string()
-    .email({message: 'Invalid email address'}),
-  captcha: z
-    .string()
+export const ForgotPasswordSchema = z.object({
+  email: z.string().email('INVALID_EMAIL_ADDRESS'),
 });
+

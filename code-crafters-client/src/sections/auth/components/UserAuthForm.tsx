@@ -13,6 +13,7 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/
 import {Input} from "@/components/ui/input.tsx";
 import {InputPassword} from "@/components/ui/input-password.tsx";
 import {Button} from "@/components/ui/button.tsx";
+import {useRouter} from "@/routes";
 
 //-----------------------------------------------------------------------------------------------
 
@@ -22,6 +23,8 @@ interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export default function UserAuthForm({className, ...props}: UserAuthFormProps) {
   const [loading, setLoading] = useState<boolean>(false)
+
+  const router = useRouter()
 
   type LoginSchemaType = z.infer<typeof LoginSchema>;
 
@@ -40,10 +43,12 @@ export default function UserAuthForm({className, ...props}: UserAuthFormProps) {
 
   const finalizeLogin = async (response: any) => {
 
-
-
   }
 
+
+  const handleForgotPassword = () => {
+    router.push('/auth/forgot')
+  }
 
   useEffect(() => {
   }, [])
@@ -96,7 +101,7 @@ export default function UserAuthForm({className, ...props}: UserAuthFormProps) {
             />
           </div>
           <div className='px-1'>
-            <Button type='button' className="w-full" variant={'outline'}>
+            <Button onClick={handleForgotPassword} type='button' className="w-full" variant={'outline'}>
               Forgot your password?
             </Button>
           </div>

@@ -2,35 +2,76 @@
 
 //-----------------------------------------------------------------------------------------------
 
-
+import {useEffect, useState} from 'react';
 import {VerifySchema} from "@/schema";
 import {z} from 'zod'
 import {SubmitHandler, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form.tsx";
-import {Input} from "@/components/ui/input.tsx";
-import {Button} from "@/components/ui/button.tsx";
-import {InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot} from "@/components/ui/input-otp.tsx";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
+import {Input} from "@/components/ui/input";
+import {Button} from "@/components/ui/button";
+import {InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot} from "@/components/ui/input-otp";
+import {CountdownTimer} from "@/components/ui/countdown-timer";
+import ReCAPTCHA from "react-google-recaptcha";
+import {appConfig} from "@/config";
+import {authApi} from "@/api/authApi.ts";
+import {useRouter, useSearchParams} from "@/routes";
+import {toast} from "sonner";
 
 //-----------------------------------------------------------------------------------------------
 
-
 export default function VerifySection() {
+  const [isTimerEnded, setIsTimerEnded] = useState(false);
+  const [showRecaptcha, setShowRecaptcha] = useState(false);
+  const searchParams = useSearchParams();
+  const router = useRouter()
+
+  const email = searchParams.get('email');
 
   type VerifySchemaType = z.infer<typeof VerifySchema>
   const form = useForm<VerifySchemaType>({
     resolver: zodResolver(VerifySchema),
     defaultValues: {
       email: "",
-      code: ""
+      code: "",
+      captcha: ""
     }
   })
 
-  const handleVerify: SubmitHandler<VerifySchemaType> = async (data) => {
+  useEffect(() => {
+    if (email) {
+      form.setValue('email', email)
+    }
+  }, [email]);
 
+  const handleVerify: SubmitHandler<VerifySchemaType> = async (data) => {
+    const {email, code} = form.getValues();
+    if (!code) return;
+    await authApi.verifyEmail({email, code}).then((response: any) => {
+      toast.success(response.data.message);
+      router.push('/auth/login')
+    }).catch((error: any) => {
+      toast.error(error.message);
+    })
   }
 
-  return <>
+  const processResend = (e: any) => {
+    e.preventDefault();
+    if (!showRecaptcha) return setShowRecaptcha(true);
+    const {email, captcha} = form.getValues();
+
+    if (!captcha) return;
+
+    authApi.resendEmail({email, captcha}).then((response: any) => {
+      toast.success(response.data.message);
+      setIsTimerEnded(false)
+    }).catch((error: any) => {
+      toast.error(error.message);
+    })
+  }
+
+
+  return (
     <Form {...form}>
       <div className="flex flex-col space-y-2">
         <h1 className="text-2xl font-semibold tracking-tight">
@@ -56,6 +97,7 @@ export default function VerifySection() {
             </FormItem>
           )}
         />
+        <CountdownTimer isTimerEnded={isTimerEnded} setIsTimerEnded={setIsTimerEnded}/>
         <FormField
           control={form.control}
           name="code"
@@ -85,36 +127,47 @@ export default function VerifySection() {
             </FormItem>
           )}
         />
-        {/*{showRecaptcha && (*/}
-        {/*  <FormField*/}
-        {/*    control={form.control}*/}
-        {/*    name="captcha"*/}
-        {/*    render={({field}) => (*/}
-        {/*      <FormItem>*/}
-        {/*        <FormLabel>*/}
-        {/*          Human Verification*/}
-        {/*        </FormLabel>*/}
-        {/*        <FormControl>*/}
-        {/*          <ReCAPTCHA*/}
-        {/*            sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}*/}
-        {/*            onChange={value => {*/}
-        {/*              field.onChange(value);*/}
-        {/*            }}*/}
-        {/*          />*/}
-        {/*        </FormControl>*/}
-        {/*        <FormMessage/>*/}
-        {/*      </FormItem>*/}
-        {/*    )}*/}
-        {/*  />*/}
-        {/*)}*/}
+        {showRecaptcha && <FormField
+          control={form.control}
+          name="captcha"
+          render={({field}) => (
+            <FormItem>
+              <FormLabel>
+                Human Verification
+              </FormLabel>
+              <FormControl>
+                <ReCAPTCHA
+                  sitekey={appConfig.recaptcha.siteKey || ""}
+                  onChange={value => {
+                    field.onChange(value);
+                  }}
+                />
+              </FormControl>
+              <FormMessage/>
+            </FormItem>
+          )}
+        />
+        }
         <div className={'flex flex-row gap-2 mt-4'}>
-          <Button type="button" className={'flex-1'} variant={'outline'}>
+          <Button
+            type="button"
+            className={'flex-1'}
+            variant={'outline'}
+            onClick={processResend}
+            disabled={!isTimerEnded}
+          >
             Resend
           </Button>
-          <Button type={'submit'} className={'flex-1'}>
+          <Button
+            type={'submit'}
+            className={'flex-1'}
+            disabled={isTimerEnded}
+          >
             Verify
           </Button>
         </div>
       </form>
-    </Form></>
+    </Form>
+  )
 }
+

@@ -44,7 +44,7 @@ const useAuthStore = create<AuthState>()(
           try {
             const {data} = await authApi.register(registerData);
             toast.success(data.message)
-            navigate('/auth/login');
+            navigate(`/auth/verify?email=${registerData.email}&src=registration`);
           } catch (error: any) {
             set({loading: false});
             if (isErrorResponse(error)) {

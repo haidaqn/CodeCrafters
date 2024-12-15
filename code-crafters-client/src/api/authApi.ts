@@ -1,4 +1,4 @@
-import {LoginForm, RegisterForm} from "@/interfaces";
+import {LoginForm, RegisterForm, ResendEmail, VerifyAccount} from "@/interfaces";
 
 import axiosInstance, {endpoints} from "@/utils/axios.ts";
 
@@ -25,6 +25,18 @@ export class authApi {
     if (tokenData.exp <= ~~(new Date().getTime() / 1000)) {
 
     }
+  }
+
+  static async verifyEmail(data: VerifyAccount) {
+    return axiosInstance.post(endpoints.auth.verify, data)
+  }
+
+  static async resendEmail(data: ResendEmail) {
+    return axiosInstance.post(endpoints.auth.resend, data)
+  }
+
+  static async forgotPassword(email: string) {
+    return axiosInstance.post(endpoints.auth.forgot, {email})
   }
 
 }

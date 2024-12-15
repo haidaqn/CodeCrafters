@@ -23,7 +23,9 @@ export const Messages = {
     updateInfo: "Update info successful!",
     logout: "Logout successful!",
     error: "Email or username already exists.",
-    emailUsed: "EMAIL_USED"
+    emailUsed: "EMAIL_USED",
+    verify: "I have sent the account verification code via email please check",
+    invalidCode: "Invalid verification code!"
   },
   category: {
     categoryNotFound: "Category not found!",
