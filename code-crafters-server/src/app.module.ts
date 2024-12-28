@@ -28,6 +28,7 @@ import { CronModule } from "./modules/cron";
       isGlobal: true,
       load: [configuration]
     }),
+    ScheduleModule.forRoot(),
     DatabaseModule,
     LoggerModule,
     CategoryModule,
@@ -42,7 +43,6 @@ import { CronModule } from "./modules/cron";
     AppCacheModule,
     MailModule,
     UserModule,
-    ScheduleModule.forRoot(),
     AuthModule,
     CronModule
   ]

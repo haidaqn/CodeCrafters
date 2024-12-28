@@ -5,10 +5,7 @@ import { PaginationDto } from "src/types/paging";
 import { ApiQuery } from "@nestjs/swagger";
 
 @Controller("api/v1/users")
-// @ApiBearerAuth()
-// @UseGuards(JwtAuthGuard)
 export class UserController {
-
   constructor(
     private readonly userService: UserService
   ) {

@@ -3,7 +3,7 @@ import { ApiBearerAuth, ApiQuery } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../../auth";
 import { TestCaseService } from "./test-case.service";
 import { Pagination } from "../../decorators";
-import { PaginationDto } from "../../types/paging";
+import { PaginationDto } from "../../types";
 import { CreateTestCaseDTO, UpdateTestCaseDTO } from "./test-case.dto";
 import { AdminRequired } from "../user/decorators/permission.decorator";
 
