@@ -7,7 +7,7 @@ interface CountdownTimerProps {
 }
 
 export function CountdownTimer({setIsTimerEnded, isTimerEnded}: CountdownTimerProps) {
-  const [timeLeft, setTimeLeft] = useState(0.1 * 60);
+  const [timeLeft, setTimeLeft] = useState(5 * 60);
 
   useEffect(() => {
     if (isTimerEnded) return;
@@ -28,7 +28,7 @@ export function CountdownTimer({setIsTimerEnded, isTimerEnded}: CountdownTimerPr
 
   useEffect(() => {
     if (!isTimerEnded) {
-      setTimeLeft(0.1 * 60);
+      setTimeLeft(5 * 60);
     }
   }, [isTimerEnded]);
 

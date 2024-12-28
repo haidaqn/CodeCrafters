@@ -13,7 +13,7 @@ import { MailModule, UserModule } from "../modules";
     JwtModule.registerAsync({
       useFactory: (config: ConfigService) => ({
         secret: config.get("auth.jwt.secret"),
-        signOptions: { expiresIn: "1d" }
+        signOptions: { expiresIn: "3d" }
       }),
       inject: [ConfigService]
     })

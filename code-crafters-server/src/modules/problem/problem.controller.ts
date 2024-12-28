@@ -7,7 +7,7 @@ import { PaginationDto } from "../../types/paging";
 import { CreateProblemDTO, UpdateProblemDTO } from "./problem.dto";
 import { AdminRequired } from "../user/decorators/permission.decorator";
 
-@Controller("problems")
+@Controller("api/v1/problems")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 export class ProblemController {

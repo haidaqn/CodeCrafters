@@ -11,7 +11,7 @@ import {Input} from "@/components/ui/input.tsx";
 import {InputPassword} from "@/components/ui/input-password.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {ArrowRightIcon} from "@radix-ui/react-icons";
-import useAuthStore from "@/store/auth-store.ts";
+import useAuthStore from "@/store/auth-store.tsx";
 import {useRouter} from 'next/navigation';
 
 

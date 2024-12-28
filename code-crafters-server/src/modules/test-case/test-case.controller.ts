@@ -7,7 +7,7 @@ import { PaginationDto } from "../../types/paging";
 import { CreateTestCaseDTO, UpdateTestCaseDTO } from "./test-case.dto";
 import { AdminRequired } from "../user/decorators/permission.decorator";
 
-@Controller("test-case")
+@Controller("api/v1/test-cases")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 export class TestCaseController {

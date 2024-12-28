@@ -1,4 +1,6 @@
-import React, { createContext, ReactNode, useContext, useState } from 'react';
+"use client";
+
+import React, {createContext, ReactNode, useContext, useState} from 'react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,7 +11,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog.tsx';
-import { Button } from '@/components/ui/button.tsx';
+import {Button} from '@/components/ui/button.tsx';
 
 interface AlertDialogContextType {
   showAlert: (options: {
@@ -22,7 +24,7 @@ interface AlertDialogContextType {
 
 const AlertDialogContext = createContext<AlertDialogContextType | undefined>(undefined);
 
-export const AlertDialogProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const AlertDialogProvider: React.FC<{ children: ReactNode }> = ({children}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [header, setHeader] = useState('');
   const [description, setDescription] = useState('');
@@ -31,7 +33,7 @@ export const AlertDialogProvider: React.FC<{ children: ReactNode }> = ({ childre
   const [loading, setLoading] = useState(false);
   const [asyncAction, setAsyncAction] = useState<(() => Promise<void>) | null>(null);
 
-  const showAlert = ({ header, description, confirmText = 'Confirm', asyncAction }: {
+  const showAlert = ({header, description, confirmText = 'Confirm', asyncAction}: {
     header: string;
     description: string;
     confirmText?: string;
@@ -73,7 +75,7 @@ export const AlertDialogProvider: React.FC<{ children: ReactNode }> = ({ childre
   };
 
   return (
-    <AlertDialogContext.Provider value={{ showAlert }}>
+    <AlertDialogContext.Provider value={{showAlert}}>
       <>
         {children}
         <AlertDialog open={isOpen} onOpenChange={setIsOpen}>

@@ -6,7 +6,7 @@ import { Pagination, ReqUser } from "../../decorators";
 import { PaginationDto } from "../../types/paging";
 import { CreateContestParticipantDTO, UpdateContestParticipantDTO } from "./contest-participant.dto";
 
-@Controller("contest-participant")
+@Controller("api/v1/contest-participants")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 export class ContestParticipantController {

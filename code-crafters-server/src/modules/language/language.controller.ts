@@ -3,11 +3,12 @@ import { ApiBearerAuth, ApiQuery } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../../auth";
 import { LanguageService } from "./language.service";
 import { Pagination } from "../../decorators";
-import { PaginationDto } from "../../types/paging";
+import { PaginationDto } from "../../types";
 import { CreateLanguageDTO, UpdateLanguageDTO } from "./language.dto";
 import { AdminRequired } from "../user/decorators/permission.decorator";
+import { BlockUserDto } from "../user";
 
-@Controller("languages")
+@Controller("api/v1/languages")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 export class LanguageController {
@@ -42,12 +43,12 @@ export class LanguageController {
     return await this.languageService.update(id, updateLanguageDto);
   }
 
-  @Delete(":id")
+  @Post("block")
   @AdminRequired()
   public async delete(
-    @Param("id") id: number
+    @Body() blockDto: BlockUserDto
   ) {
-    return await this.languageService.delete(id);
+    return await this.languageService.block(blockDto.ids);
   }
 
   @Get()
@@ -61,6 +62,4 @@ export class LanguageController {
   ) {
     return await this.languageService.list(pagination);
   }
-
-
 }

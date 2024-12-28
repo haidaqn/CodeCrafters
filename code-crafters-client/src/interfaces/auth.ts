@@ -1,5 +1,5 @@
 export interface LoginForm {
-  email: string;
+  account: string;
   password: string;
 }
 
@@ -27,13 +27,17 @@ export interface Tokens {
 }
 
 export interface User {
-  id: number;
-  fullName: string;
-  phone: any;
-  email: string;
-  username: string;
-  createdAt: string;
-  updatedAt: string;
+  id: number
+  createdAt: string
+  updatedAt: string
+  fullName: string
+  phone: string
+  email: string
+  username: string
+  avatar: string,
+  totalSolved: boolean
+  role: RoleInApp
+  googleId?: string
 }
 
 export interface ChangePasswordForm {

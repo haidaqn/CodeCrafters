@@ -14,6 +14,7 @@ import {Input} from "@/components/ui/input.tsx";
 import {InputPassword} from "@/components/ui/input-password.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {useRouter} from "@/routes";
+import useAuthStore from "@/store/auth-store.tsx";
 
 //-----------------------------------------------------------------------------------------------
 
@@ -22,8 +23,8 @@ interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export default function UserAuthForm({className, ...props}: UserAuthFormProps) {
-  const [loading, setLoading] = useState<boolean>(false)
-
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const {login} = useAuthStore();
   const router = useRouter()
 
   type LoginSchemaType = z.infer<typeof LoginSchema>;
@@ -31,14 +32,15 @@ export default function UserAuthForm({className, ...props}: UserAuthFormProps) {
   const form = useForm<LoginSchemaType>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
-      email: '',
+      account: '',
       password: ''
     }
   })
 
-  const handleLogin: SubmitHandler<LoginForm> = (data) => {
-    setLoading(true);
-
+  const handleLogin: SubmitHandler<LoginForm> = async (data) => {
+    setIsLoading(true);
+    await login(data, (path) => router.push(path));
+    setIsLoading(false)
   }
 
   const finalizeLogin = async (response: any) => {
@@ -73,12 +75,12 @@ export default function UserAuthForm({className, ...props}: UserAuthFormProps) {
           <div className="grid gap-1">
             <FormField
               control={form.control}
-              name="email"
+              name="account"
               render={({field}) => (
                 <FormItem className="px-1">
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Account or Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Email" {...field} />
+                    <Input placeholder="Account or Email..." {...field} />
                   </FormControl>
                   <FormMessage/>
                 </FormItem>
@@ -108,8 +110,8 @@ export default function UserAuthForm({className, ...props}: UserAuthFormProps) {
           <div className="px-1 grid gap-2">
             <Button
               className='w-full'
-              loading={loading}
-              disabled={loading}
+              loading={isLoading}
+              disabled={isLoading}
             >
               Sign In with Email
             </Button>

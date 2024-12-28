@@ -1,8 +1,8 @@
-import { DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
-import { MixerHorizontalIcon } from '@radix-ui/react-icons';
-import { Table } from '@tanstack/react-table';
+import {DropdownMenuTrigger} from '@radix-ui/react-dropdown-menu';
+import {MixerHorizontalIcon} from '@radix-ui/react-icons';
+import {Table} from '@tanstack/react-table';
 
-import { Button } from '@/components/ui/button';
+import {Button} from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -10,14 +10,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
-import {ConvertColumnIDs} from "@/constant";
 
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
 }
 
 export function DataTableViewOptions<TData>(props: DataTableViewOptionsProps<TData>) {
-  const { table } = props;
+  const {table} = props;
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -25,13 +24,13 @@ export function DataTableViewOptions<TData>(props: DataTableViewOptionsProps<TDa
           variant="outline"
           className="ml-auto hidden lg:flex"
         >
-          <MixerHorizontalIcon className="mr-2 h-4 w-4" />
-          Cấu hình
+          <MixerHorizontalIcon className="mr-2 h-4 w-4"/>
+          Setting
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[150px]">
-        <DropdownMenuLabel>Chuyển đổi cột</DropdownMenuLabel>
-        <DropdownMenuSeparator />
+        <DropdownMenuLabel>Convert columns</DropdownMenuLabel>
+        <DropdownMenuSeparator/>
         {table
           .getAllColumns()
           .filter(
@@ -46,7 +45,7 @@ export function DataTableViewOptions<TData>(props: DataTableViewOptionsProps<TDa
                 checked={column.getIsVisible()}
                 onCheckedChange={(value: boolean) => column.toggleVisibility(value)}
               >
-                {ConvertColumnIDs[column.id]}
+                {column.id.toLowerCase()}
               </DropdownMenuCheckboxItem>
             );
           })}

@@ -2,7 +2,6 @@ import UserAuthForm from "@/sections/auth/components/UserAuthForm.tsx";
 
 //-----------------------------------------------------------------------------------------------
 
-
 export default function LoginSection() {
   return <>
     <div className="flex flex-col space-y-2 text-center">

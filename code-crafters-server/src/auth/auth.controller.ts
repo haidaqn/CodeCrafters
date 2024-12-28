@@ -60,7 +60,9 @@ export class AuthController {
 
     delete user.isBlocked;
     delete user.refreshToken;
-    delete user.role;
+    delete user.googleId;
+    delete user.code;
+    delete user.emailVerified;
 
 
     return {

@@ -51,4 +51,41 @@ export const endpoints = {
     resend: `${VERSION_PREFIX}/auth/resend`,
     sso: (serviceId: string) => `${VERSION_PREFIX}/auth/oauth/${serviceId}`,
   },
+  dashboard: {},
+  category: {
+    list: `${VERSION_PREFIX}/categories`,
+    create: `${VERSION_PREFIX}/categories`,
+    update: (id: number) => `${VERSION_PREFIX}/categories/${id}`,
+    delete: (id: number) => `${VERSION_PREFIX}/categories/${id}`,
+  },
+  language: {
+    list: `${VERSION_PREFIX}/languages`,
+    create: `${VERSION_PREFIX}/languages`,
+    block: `${VERSION_PREFIX}/languages/block`,
+    update: (id: number) => `${VERSION_PREFIX}/languages/${id}`,
+    delete: (id: number) => `${VERSION_PREFIX}/languages/${id}`,
+  },
+  contest: {
+    list: `${VERSION_PREFIX}/contests`,
+    create: `${VERSION_PREFIX}/contests`,
+    update: (id: number) => `${VERSION_PREFIX}/contests/${id}`,
+    delete: (id: number) => `${VERSION_PREFIX}/contests/${id}`,
+  },
+  problem: {
+    list: `${VERSION_PREFIX}/problems`,
+    create: `${VERSION_PREFIX}/problems`,
+    update: (id: number) => `${VERSION_PREFIX}/problems/${id}`,
+    delete: (id: number) => `${VERSION_PREFIX}/problems/${id}`,
+  },
+  submission: {
+    list: `${VERSION_PREFIX}/submissions`,
+    create: `${VERSION_PREFIX}/submissions`,
+    update: (id: number) => `${VERSION_PREFIX}/submissions/${id}`,
+    delete: (id: number) => `${VERSION_PREFIX}/submissions/${id}`,
+  },
+  user: {
+    list: `${VERSION_PREFIX}/users`,
+    block: `${VERSION_PREFIX}/users/block`,
+    update: (id: number) => `${VERSION_PREFIX}/users/${id}`,
+  },
 };

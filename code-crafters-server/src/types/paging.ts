@@ -1,5 +1,5 @@
 import { IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
-
+import { Transform } from "class-transformer";
 
 export enum ESortType {
   ASC = "ASC",
@@ -13,10 +13,12 @@ export class PaginationDto {
 
   @IsOptional()
   @IsNumber()
+  @Transform(({value}) => Number(value))
   limit?: number;
 
   @IsOptional()
   @IsNumber()
+  @Transform(({value}) => Number(value))
   page?: number;
 
   @IsOptional()
@@ -24,7 +26,7 @@ export class PaginationDto {
   sortBy?: string = "createdAt";
 
   @IsOptional()
-  @IsString()
   @IsEnum(ESortType)
-  sortType?: ESortType.ASC;
+  @Transform(({value}) => value?.toUpperCase())
+  sortType?: ESortType = ESortType.ASC;
 }

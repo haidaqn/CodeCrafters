@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { LoggerService } from "../../logger";
 import { CacheService } from "../cache";
 import { ESortType, PaginationDto } from "../../types/paging";
@@ -90,17 +90,22 @@ export class LanguageService {
 
   }
 
-  async delete(id: number) {
-    const { data: language } = await this.get(id);
+  async block(ids: number[]) {
 
-    if (!language) {
+    if (!ids || ids.length === 0) {
+      throw new BadRequestException("No languages selected to block");
+    }
+
+    const languages = await this.languageRepository.find({ where: { id: In(ids) } });
+
+    if (languages.length !== ids.length) {
       throw new NotFoundException(Messages.language.languageNotFound);
     }
 
-    await this.languageRepository.remove(language);
+    await this.languageRepository.update(ids, { isActivated: false });
     await this.cache.delByPattern("languages:*");
     return {
-      message: Messages.language.languageDeleted
+      message: Messages.language.languageBlocked
     };
   }
 

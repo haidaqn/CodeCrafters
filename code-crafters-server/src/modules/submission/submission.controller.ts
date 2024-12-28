@@ -6,7 +6,7 @@ import { JwtAuthGuard, Payload } from "../../auth";
 import { ReqUser } from "../../decorators";
 
 
-@Controller("submission")
+@Controller("api/v1/submissions")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 export class SubmissionController {

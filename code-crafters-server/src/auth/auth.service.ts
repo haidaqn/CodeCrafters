@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import {HttpException, HttpStatus, Injectable} from "@nestjs/common";
 import {
   ChangePasswordDto,
   forgotPasswordDto,
@@ -11,15 +11,15 @@ import {
   UpdateInfoDto,
   VerifyUserDto
 } from "./auth.dtos";
-import { Messages } from "../config";
-import { UserService } from "../modules";
-import { MailerService } from "@nestjs-modules/mailer";
-import { JwtService } from "@nestjs/jwt";
-import { randomPassword, randomString } from "../utils";
-import { hashSync } from "bcrypt";
-import { ConfigService } from "@nestjs/config";
-import { google, oauth2_v2 } from "googleapis";
-import { QuerySsoUser } from "../types";
+import {Messages} from "../config";
+import {UserService} from "../modules";
+import {MailerService} from "@nestjs-modules/mailer";
+import {JwtService} from "@nestjs/jwt";
+import {randomPassword, randomString} from "../utils";
+import {hashSync} from "bcrypt";
+import {ConfigService} from "@nestjs/config";
+import {google, oauth2_v2} from "googleapis";
+import {QuerySsoUser} from "../types";
 import axios from "axios";
 
 @Injectable()
@@ -39,7 +39,7 @@ export class AuthService {
       throw new Error(Messages.auth.notFound);
     }
 
-    await this.userService.updateUser({ id: user.id, refreshToken: "" });
+    await this.userService.updateUser({id: user.id, refreshToken: ""});
 
     return {
       message: Messages.auth.logout
@@ -67,11 +67,13 @@ export class AuthService {
       fullName: user.fullName
     });
 
-    await this.userService.updateUser({ id: user.id, refreshToken: tokens.refresh_token });
+    await this.userService.updateUser({id: user.id, refreshToken: tokens.refresh_token});
 
     delete user.isBlocked;
     delete user.refreshToken;
-    delete user.role;
+    delete user.googleId;
+    delete user.code;
+    delete user.emailVerified;
 
     return {
       message: Messages.auth.loginSuccess,
@@ -92,7 +94,7 @@ export class AuthService {
 
     const code = await this.randomCode();
 
-    const newUser = await this.userService.createUsers({ ...registerDto, code });
+    const newUser = await this.userService.createUsers({...registerDto, code});
 
     if (!newUser) {
       throw new Error(Messages.auth.registerFailed);
@@ -129,7 +131,7 @@ export class AuthService {
 
     const passwordHash = hashSync(newPassword, 10);
 
-    await this.userService.updateUser({ id: user.id, password: passwordHash });
+    await this.userService.updateUser({id: user.id, password: passwordHash});
 
     const html = `Your account is ${forgetPasswordDto.email} \nYour password is ${newPassword}`;
     const subject = "Re-issue password CODE CRAFTER!!";
@@ -170,7 +172,7 @@ export class AuthService {
       fullName: user.fullName
     });
 
-    await this.userService.updateUser({ id: user.id, refreshToken: tokens.refresh_token });
+    await this.userService.updateUser({id: user.id, refreshToken: tokens.refresh_token});
 
     return {
       message: Messages.auth.refreshToken,
@@ -193,7 +195,7 @@ export class AuthService {
 
     const passwordHash = hashSync(changePasswordDto.newPassword, 10);
 
-    await this.userService.updateUser({ id: user.id, password: passwordHash });
+    await this.userService.updateUser({id: user.id, password: passwordHash});
 
     return {
       message: Messages.auth.passwordChanged
@@ -235,7 +237,7 @@ export class AuthService {
         });
         let userInfo: oauth2_v2.Schema$Userinfo;
         if (code) {
-          const { tokens } = await oauth2Client.getToken(code);
+          const {tokens} = await oauth2Client.getToken(code);
           oauth2Client.setCredentials(tokens);
           userInfo = (await oauth2.userinfo.get()).data;
         } else if (access_token) {
@@ -268,7 +270,7 @@ export class AuthService {
   }
 
   async verifyAccount(verify: VerifyUserDto) {
-    const { email, code } = verify;
+    const {email, code} = verify;
 
     const user = await this.userService.findByEmail(email);
 
@@ -292,9 +294,9 @@ export class AuthService {
   }
 
   async resendEmail(resendEmailDto: ResendEmailDto) {
-    const { email, captcha } = resendEmailDto;
+    const {email, captcha} = resendEmailDto;
 
-    const { secretKey } = this.config.get("recaptcha");
+    const {secretKey} = this.config.get("recaptcha");
 
     const user = await this.userService.findByEmail(email);
     if (!user) throw new HttpException(Messages.auth.emailUsed, HttpStatus.BAD_REQUEST);
@@ -345,7 +347,7 @@ export class AuthService {
       throw new Error(Messages.auth.notFound);
     }
 
-    const userUpdate = await this.userService.updateUser({ id: user.id, ...updateInfo });
+    const userUpdate = await this.userService.updateUser({id: user.id, ...updateInfo});
 
     return {
       message: Messages.auth.updateInfo,

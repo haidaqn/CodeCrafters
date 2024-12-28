@@ -12,10 +12,11 @@ type AuthState = {
   isAuthenticated: boolean;
   loading: boolean;
   tokens: Tokens | null;
-  login: (data: LoginForm) => Promise<void>;
+  login: (data: LoginForm, navigate: (path: string) => void) => Promise<void>;
   register: (data: RegisterForm, navigate: (path: string) => void) => Promise<void>;
   signOut: () => void;
-  updateUser: (updatedUser: User) => void;
+  isAuthLoaded: boolean;
+  setAuthLoaded: () => void;
 };
 
 const useAuthStore = create<AuthState>()(
@@ -26,10 +27,17 @@ const useAuthStore = create<AuthState>()(
         isAuthenticated: false,
         loading: false,
         tokens: null,
-        login: async (loginData: LoginForm) => {
+        login: async (loginData: LoginForm, navigate: (path: string) => void) => {
           set({loading: true});
           try {
-            const {data} = await authApi.login(loginData);
+            const response = await authApi.login(loginData);
+            set({
+              user: response.data.user,
+              tokens: response.data.tokens,
+              isAuthenticated: true,
+            })
+            toast.success(response.message);
+            navigate(`/home`);
           } catch (error: any) {
             set({loading: false});
             if (isErrorResponse(error)) {
@@ -62,14 +70,9 @@ const useAuthStore = create<AuthState>()(
             isAuthenticated: false,
             tokens: null,
           });
-          toast.success('Bạn đã đăng xuất thành công!');
+          toast.success('Bạn đã đăng xuất thành công!')
         },
-        updateUser: (updatedUser: User) => {
-          set((state) => ({
-            user: {...state.user, ...updatedUser},
-          }));
-          toast.success('Thông tin người dùng đã được cập nhật!');
-        },
+        isAuthLoaded: false, setAuthLoaded: () => set({isAuthLoaded: true}),
       }),
       {
         name: 'auth-storage',

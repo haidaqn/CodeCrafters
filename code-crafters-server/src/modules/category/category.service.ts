@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { ESortType, PaginationDto } from "../../types/paging";
+import { ESortType, PaginationDto } from "../../types";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { LoggerService } from "../../logger";

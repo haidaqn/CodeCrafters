@@ -25,7 +25,10 @@ export const Messages = {
     error: "Email or username already exists.",
     emailUsed: "EMAIL_USED",
     verify: "I have sent the account verification code via email please check",
-    invalidCode: "Invalid verification code!"
+    invalidCode: "Invalid verification code!",
+    updateSuccess: "Update info successful!",
+    blockUser: "Block user successful!",
+    deleteSuccess: "Delete user successful!"
   },
   category: {
     categoryNotFound: "Category not found!",
@@ -83,7 +86,8 @@ export const Messages = {
     languageUpdated: "Language updated successfully!",
     languageDeleted: "Language deleted successfully!",
     languageUnsupported: "The selected language is not supported!",
-    languageExists: "Language name already exists!"
+    languageExists: "Language name already exists!",
+    languageBlocked: "Language blocked successfully!"
   },
   problem: {
     problemNotFound: "Problem not found!",

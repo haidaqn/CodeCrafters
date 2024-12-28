@@ -1,8 +1,3 @@
-export const ConvertColumnIDs: { [key: string]: string } = {
-  'id': 'Mã',
-};
-
-
 export class ColorConfig {
   static config = {
     draft: 'hsl(var(--background))',
@@ -24,13 +19,7 @@ export class ColorConfig {
 
 export type ColorConfigKey = keyof typeof ColorConfig.config;
 
-
 export const KeyDialogs = {
-  cardType: 'card-type',
-  card: 'card',
-  role: 'role',
-  resetPassowrdUser: 'reset-password-user',
-  paymentVNpay: 'paymentvnpay',
-  bill: 'bill',
+  language: 'language',
 };
 export type IKeyDialog = typeof KeyDialogs[keyof typeof KeyDialogs];

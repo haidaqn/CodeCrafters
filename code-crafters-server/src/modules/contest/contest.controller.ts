@@ -7,7 +7,7 @@ import { PaginationDto } from "../../types/paging";
 import { CreateContestDTO, UpdateContestDTO } from "./contest.dto";
 import { AdminRequired } from "../user/decorators/permission.decorator";
 
-@Controller("contests")
+@Controller("api/v1/contests")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 export class ContestController {

@@ -30,7 +30,6 @@ import { CronModule } from "./modules/cron";
     }),
     DatabaseModule,
     LoggerModule,
-    AuthModule,
     CategoryModule,
     ContestModule,
     ProblemModule,
@@ -44,6 +43,7 @@ import { CronModule } from "./modules/cron";
     MailModule,
     UserModule,
     ScheduleModule.forRoot(),
+    AuthModule,
     CronModule
   ]
 })

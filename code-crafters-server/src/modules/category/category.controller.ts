@@ -8,7 +8,7 @@ import { Pagination } from "../../decorators";
 import { CategoryDto } from "./category.dto";
 
 
-@Controller("categories")
+@Controller("api/v1/categories")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 export class CategoryController {
