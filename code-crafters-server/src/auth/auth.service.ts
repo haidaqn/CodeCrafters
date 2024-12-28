@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from "@nestjs/common";
 import {
   ChangePasswordDto,
   forgotPasswordDto,
@@ -25,10 +25,11 @@ import axios from "axios";
 @Injectable()
 export class AuthService {
   constructor(
-    private userService: UserService,
-    private mailService: MailerService,
-    private jwtService: JwtService,
-    private config: ConfigService
+    @Inject(forwardRef(() => UserService))
+    private readonly userService: UserService,
+    private readonly mailService: MailerService,
+    private readonly jwtService: JwtService,
+    private readonly config: ConfigService
   ) {
   }
 

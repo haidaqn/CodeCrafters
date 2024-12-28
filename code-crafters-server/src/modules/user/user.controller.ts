@@ -1,10 +1,14 @@
-import { Body, Controller, Get, Param, Patch, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { BlockUserDto, UpdateUserDto } from "./user.dto";
 import { PaginationDto } from "src/types/paging";
-import { ApiQuery } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiQuery } from "@nestjs/swagger";
+import { JwtAuthGuard } from "../../auth";
+import { AdminRequired } from "./decorators/permission.decorator";
 
 @Controller("api/v1/users")
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(
     private readonly userService: UserService
@@ -34,6 +38,7 @@ export class UserController {
   }
 
   @Get()
+  @AdminRequired()
   @ApiQuery({ name: "page", required: false, type: String })
   @ApiQuery({ name: "limit", required: false, type: String })
   @ApiQuery({ name: "sortBy", required: false, type: String })
