@@ -1,16 +1,8 @@
-import {useQuery, UseQueryOptions} from "@tanstack/react-query";
-import {SuccessResponse} from "@/interfaces";
-import {ParsedQuery} from "query-string";
-import {LanguageApi} from "@/api/languageApi.ts";
+import {useQuery} from "@tanstack/react-query";
+import {Contest, IUseQuery} from "@/interfaces";
+import {LanguageApi} from "@/api/language.ts";
 
-type UseContestOptions<T> = Omit<UseQueryOptions<SuccessResponse<T>>, 'queryFn' | 'queryKey'>
-
-interface IUseContest {
-  options?: UseContestOptions<any>,
-  queryParam: ParsedQuery
-}
-
-export const useContestFetcher = (props: IUseContest) => {
+export const useContestFetcher = (props: IUseQuery<Contest>) => {
   const {options, queryParam} = props;
 
   return useQuery({
@@ -21,7 +13,6 @@ export const useContestFetcher = (props: IUseContest) => {
       return data;
     }
   })
-
 }
 
 

@@ -3,9 +3,5 @@
 import {UserTable} from "@/sections"
 
 export const UserTableView = () => {
-  return (
-    <>
-      <UserTable/>
-    </>
-  )
+  return <UserTable/>
 }

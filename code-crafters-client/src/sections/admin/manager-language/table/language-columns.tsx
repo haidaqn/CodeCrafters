@@ -2,6 +2,7 @@ import {ColumnDef} from '@tanstack/react-table';
 import {Checkbox} from '@/components/ui/checkbox.tsx';
 import {DataTableColumnHeader} from '@/components/common/data-table/data-table-column-header.tsx';
 import {Language} from "@/interfaces";
+import {LanguageHandler} from "@/sections/admin/manager-language/table/language-handle.tsx";
 
 export const languageColumns: ColumnDef<Language>[] = [
   {
@@ -54,9 +55,13 @@ export const languageColumns: ColumnDef<Language>[] = [
     header: ({column}) => (
       <DataTableColumnHeader column={column} title={'status'}/>
     ),
-    cell: ({row}) => <div className="w-[50px] font-bold">{row.getValue('isActive') ?
-      <span className='text-red-500'>Inactive</span> :
-      <span className='text-green-500'>Active</span>
+    cell: ({row}) => <div className="w-[50px] font-bold">{Boolean(row.original.isActivated) ?
+      <span className='text-green-500'>Active</span> :
+      <span className='text-red-500'>InActive</span>
     }</div>,
+  },
+  {
+    id: 'actions',
+    cell: ({row}) => (<LanguageHandler row={row}/>),
   },
 ]

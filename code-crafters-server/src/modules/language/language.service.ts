@@ -22,13 +22,16 @@ export class LanguageService {
   async create(createLanguageDto: CreateLanguageDTO) {
     const language = await this.languageRepository.findOne({
       where: {
-        name: createLanguageDto.name,
-        version: createLanguageDto.version
+        name: createLanguageDto.name
       }
     });
 
     if (language) {
       throw new Error(Messages.language.languageExists);
+    }
+
+    if (!createLanguageDto.isActivated) {
+      createLanguageDto.isActivated = true;
     }
 
     const data = this.languageRepository.create(createLanguageDto);
@@ -63,7 +66,7 @@ export class LanguageService {
   async update(id: number, updateLanguageDto: UpdateLanguageDTO) {
     const { data: language } = await this.get(id);
 
-    if (!language.isActivated) {
+    if (!language) {
       throw new BadRequestException("Language is deactivated and cannot be updated.");
     }
 
@@ -102,7 +105,7 @@ export class LanguageService {
       throw new NotFoundException(Messages.language.languageNotFound);
     }
 
-    await this.languageRepository.update(ids, { isActivated: false });
+    await this.languageRepository.update(ids, { isActivated: languages.length === 1 ? !languages[0].isActivated : true });
     await this.cache.delByPattern("languages:*");
     return {
       message: Messages.language.languageBlocked

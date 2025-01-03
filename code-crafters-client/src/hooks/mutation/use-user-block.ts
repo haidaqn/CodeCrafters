@@ -1,6 +1,6 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {toast} from "sonner";
-import {UserApi} from "@/api/userApi.ts";
+import {UserApi} from "@/api/user.ts";
 import {IMutation} from "@/interfaces";
 
 export const useUserBlocks = (props?: IMutation) => {

@@ -1,8 +1,8 @@
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { useFormContext } from 'react-hook-form';
-import { ChangeEvent, ReactNode } from 'react';
-import { CurrencyFormatter } from '@/lib/currency-formater.ts';
+import {FormControl, FormField, FormItem, FormLabel, FormMessage} from '@/components/ui/form';
+import {Input} from '@/components/ui/input';
+import {useFormContext} from 'react-hook-form';
+import {ChangeEvent, ReactNode} from 'react';
+import {CurrencyFormatter} from '@/lib/currency-formater';
 
 interface TextFieldProps {
   label: string;
@@ -31,7 +31,7 @@ export const TextField = (props: TextFieldProps) => {
     currencyVnd = false,
   } = props;
 
-  const { control } = useFormContext();
+  const {control} = useFormContext();
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>, onChange: (value: number | string) => void) => {
     const value = event.target.value;
@@ -50,7 +50,7 @@ export const TextField = (props: TextFieldProps) => {
     <FormField
       control={control}
       name={name}
-      render={({ field }) => (
+      render={({field}) => (
         <FormItem className="space-y-1">
           <FormLabel className="relative">
             {label}
@@ -59,7 +59,7 @@ export const TextField = (props: TextFieldProps) => {
             )}
           </FormLabel>
           <FormControl>
-            <div className="flex items-center border rounded px-2">
+            <div className="flex items-center px-2">
               {startIcon && <span className="mr-2">{startIcon}</span>}
               <Input
                 {...field}
@@ -69,12 +69,12 @@ export const TextField = (props: TextFieldProps) => {
                 disabled={disabled}
                 value={(currencyVnd ? CurrencyFormatter.format(field.value?.toString()) : field.value) ?? ''}
                 onChange={(e) => handleChange(e, field.onChange)}
-                className="flex-grow border-none outline-none"
+                className="flex-grow"
               />
               {endIcon && <span className="ml-2">{endIcon}</span>}
             </div>
           </FormControl>
-          <FormMessage />
+          <FormMessage/>
         </FormItem>
       )}
     />

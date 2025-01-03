@@ -1,13 +1,13 @@
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { LoggerService } from "../../logger";
-import { User } from "./user.entity";
-import { In, LessThanOrEqual, MoreThan, Repository } from "typeorm";
-import { CreateUserDto, UpdateUserDto, ValidateUserDto } from "./user.dto";
-import { compare, hashSync } from "bcrypt";
-import { ESortType, PaginationDto, ROLE } from "../../types";
-import { Messages } from "../../config";
-import { CacheService } from "../cache";
+import {HttpException, HttpStatus, Injectable} from "@nestjs/common";
+import {InjectRepository} from "@nestjs/typeorm";
+import {LoggerService} from "../../logger";
+import {User} from "./user.entity";
+import {In, LessThanOrEqual, MoreThan, Repository} from "typeorm";
+import {CreateUserDto, UpdateUserDto, ValidateUserDto} from "./user.dto";
+import {compare, hashSync} from "bcrypt";
+import {ESortType, PaginationDto, ROLE} from "../../types";
+import {Messages} from "../../config";
+import {CacheService} from "../cache";
 
 @Injectable()
 export class UserService {
@@ -25,7 +25,7 @@ export class UserService {
 
   async updateUser(updateUser: UpdateUserDto) {
     try {
-      const user = await this.userRepository.findOne({ where: { id: updateUser.id } });
+      const user = await this.userRepository.findOne({where: {id: updateUser.id}});
 
       if (!user) new HttpException("USER_UPDATE", HttpStatus.NOT_FOUND);
 
@@ -37,7 +37,7 @@ export class UserService {
       await this.userRepository.update(updateUser.id, updatedData);
 
       await this.cache.delByPattern("users:*");
-      return await this.userRepository.findOne({ where: { id: updateUser.id } });
+      return await this.userRepository.findOne({where: {id: updateUser.id}});
 
     } catch (error) {
       this.logger.error(error);
@@ -50,7 +50,7 @@ export class UserService {
 
       const passwordHash = hashSync(createUser.password, 10);
 
-      const user = this.userRepository.create({ ...createUser, password: passwordHash });
+      const user = this.userRepository.create({...createUser, password: passwordHash});
 
       if (!user) return null;
 
@@ -66,19 +66,19 @@ export class UserService {
   }
 
   async findByUser(email: string, username: string) {
-    return await this.userRepository.findOne({ where: [{ email }, { username }] });
+    return await this.userRepository.findOne({where: [{email}, {username}]});
   }
 
   async findByGoogleId(googleId: string) {
-    return await this.userRepository.findOne({ where: { googleId: googleId } });
+    return await this.userRepository.findOne({where: {googleId: googleId}});
   }
 
   async findByEmail(email: string) {
-    return await this.userRepository.findOne({ where: { email: email } });
+    return await this.userRepository.findOne({where: {email: email}});
   }
 
   async findByEmailAndCode(email: string, code: string) {
-    return await this.userRepository.findOne({ where: { email, code } });
+    return await this.userRepository.findOne({where: {email, code}});
   }
 
   async findUserRemove() {
@@ -96,11 +96,11 @@ export class UserService {
   }
 
   async findByID(id: number) {
-    return await this.userRepository.findOne({ where: { id } });
+    return await this.userRepository.findOne({where: {id}});
   }
 
   async findByCode(code: string) {
-    return await this.userRepository.findOne({ where: { code } });
+    return await this.userRepository.findOne({where: {code}});
   }
 
 
@@ -139,17 +139,17 @@ export class UserService {
       throw new HttpException("No users selected to block", HttpStatus.BAD_REQUEST);
     }
 
-    const users = await this.userRepository.find({ where: { id: In(ids) } });
+    const users = await this.userRepository.find({where: {id: In(ids)}});
     if (users.length !== ids.length) {
       throw new HttpException("Some selected users were not found", HttpStatus.NOT_FOUND);
     }
 
-    await this.userRepository.update(ids, { isBlocked: true });
+    await this.userRepository.update(ids, {isBlocked: users.length === 1 ? !users[0].isBlocked : true});
     await this.cache.delByPattern("users:*");
 
     return {
       message: `Successfully blocked ${ids.length} users`,
-      blockedUsers: users.map(u => ({ id: u.id, username: u.username }))
+      blockedUsers: users.map(u => ({id: u.id, username: u.username}))
     };
   }
 
@@ -157,7 +157,7 @@ export class UserService {
     paginationDto: PaginationDto
   ) {
     try {
-      const { page = 1, limit = 10, sortBy = "createdAt", sortType = ESortType.DESC, search } = paginationDto;
+      const {page = 1, limit = 10, sortBy = "createdAt", sortType = ESortType.DESC, search} = paginationDto;
 
       const cacheKey = `users:${page}:${limit}:${sortBy}:${sortType}:${search}`;
 
@@ -165,7 +165,7 @@ export class UserService {
         const skip = (page - 1) * limit;
 
         const query = this.userRepository.createQueryBuilder("user")
-          .where("user.role != :admin", { admin: ROLE.ADMIN })
+          .where("user.role != :admin", {admin: ROLE.ADMIN})
           .select(["user.id", "user.username", "user.email",
             "user.isBlocked", "user.googleId", "user.role",
             "user.totalSolved", "user.phone", "user.fullName",
@@ -173,7 +173,7 @@ export class UserService {
           ]);
 
         if (search) {
-          query.andWhere("user.username LIKE :search OR user.email LIKE :search OR user.fullName LIKE :search OR user.phone LIKE :search", { search: `%${search}%` });
+          query.andWhere("user.username LIKE :search OR user.email LIKE :search OR user.fullName LIKE :search OR user.phone LIKE :search", {search: `%${search}%`});
         }
 
         if (sortBy && !this.userRepository.metadata.columns.find(column => column.propertyName === sortBy)) {

@@ -1,4 +1,13 @@
-import {Bookmark, CircleFadingPlus, Languages, LayoutGrid, LucideIcon, SendHorizontal, Users} from 'lucide-react';
+import {
+  Bookmark,
+  ChartBarStacked,
+  CircleFadingPlus,
+  Languages,
+  LayoutGrid,
+  LucideIcon,
+  SendHorizontal,
+  Users
+} from 'lucide-react';
 
 type Submenu = {
   href: string;
@@ -45,30 +54,37 @@ export function SideBarList(pathname: string): Group[] {
           submenus: [],
         },
         {
-          href: `/admin/contest`,
-          label: 'Contest',
-          active: pathname.includes('/admin/contest'),
+          href: `/admin/categories`,
+          label: 'Categories',
+          active: pathname.includes(`/admin/categories`),
+          icon: ChartBarStacked,
+          submenus: [],
+        },
+        {
+          href: `/admin/contests`,
+          label: 'Contests',
+          active: pathname.includes('/admin/contests'),
           icon: CircleFadingPlus,
           submenus: [],
         },
         {
-          href: `/admin/language`,
-          label: 'Language',
-          active: pathname.includes('/admin/language'),
+          href: `/admin/languages`,
+          label: 'Languages',
+          active: pathname.includes('/admin/languages'),
           icon: Languages,
           submenus: [],
         },
         {
-          href: `/admin/problem`,
-          label: 'Problem',
-          active: pathname.includes('/admin/problem'),
+          href: `/admin/problems`,
+          label: 'Problems',
+          active: pathname.includes('/admin/problems'),
           icon: Bookmark,
           submenus: [],
         },
         {
-          href: `/admin/submission`,
-          label: 'Submission',
-          active: pathname.includes('/admin/submission'),
+          href: `/admin/submissions`,
+          label: 'Submissions',
+          active: pathname.includes('/admin/submissions'),
           icon: SendHorizontal,
           submenus: [],
         },

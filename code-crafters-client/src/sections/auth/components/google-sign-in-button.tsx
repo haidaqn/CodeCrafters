@@ -3,7 +3,7 @@
 import GoogleOAuthProvider from "@/components/providers/google-oauth.tsx";
 import {useState} from "react";
 import {useGoogleLogin, useGoogleOneTapLogin} from "@react-oauth/google";
-import {authApi} from "@/api/authApi.ts";
+import {AuthApi} from "@/api/auth.ts";
 import {toast} from "sonner";
 import {Button} from "@/components/ui/button.tsx";
 import {Icons} from "@/components/ui/icons.tsx";
@@ -32,7 +32,7 @@ function GoogleSignInButton(props: GoogleSignInButtonProps) {
     onSuccess: tokenResponse => {
       const code = tokenResponse.code;
       setLoading(true);
-      authApi.authSso('google', {
+      AuthApi.authSso('google', {
         code,
         redirect_uri: 'postmessage'
       }).then(props.finalizeLogin).catch(err => {
@@ -52,7 +52,7 @@ function GoogleSignInButton(props: GoogleSignInButtonProps) {
   useGoogleOneTapLogin({
     onSuccess: credentialResponse => {
       const {credential} = credentialResponse;
-      authApi.authSso('google', {
+      AuthApi.authSso('google', {
         access_token: credential,
         redirect_uri: location + '/oauth/google',
       }).then(props.finalizeLogin).catch(err => {

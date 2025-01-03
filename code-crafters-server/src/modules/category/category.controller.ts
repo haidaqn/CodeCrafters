@@ -1,11 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from "@nestjs/common";
-import { ApiBearerAuth, ApiQuery } from "@nestjs/swagger";
-import { JwtAuthGuard } from "../../auth";
-import { AdminRequired } from "../user/decorators/permission.decorator";
-import { CategoryService } from "./category.service";
-import { PaginationDto } from "../../types/paging";
-import { Pagination } from "../../decorators";
-import { CategoryDto } from "./category.dto";
+import {Body, Controller, Delete, Get, Param, Patch, Post, UseGuards} from "@nestjs/common";
+import {ApiBearerAuth, ApiQuery} from "@nestjs/swagger";
+import {JwtAuthGuard} from "../../auth";
+import {AdminRequired} from "../user/decorators/permission.decorator";
+import {CategoryService} from "./category.service";
+import {IdsDTo, PaginationDto} from "../../types";
+import {Pagination} from "../../decorators";
+import {CategoryDto} from "./category.dto";
 
 
 @Controller("api/v1/categories")
@@ -18,11 +18,11 @@ export class CategoryController {
   }
 
   @Get()
-  @ApiQuery({ name: "page", required: false, type: Number })
-  @ApiQuery({ name: "limit", required: false, type: Number })
-  @ApiQuery({ name: "sortBy", required: false, type: String })
-  @ApiQuery({ name: "sortType", required: false, type: String })
-  @ApiQuery({ name: "search", required: false, type: String })
+  @ApiQuery({name: "page", required: false, type: Number})
+  @ApiQuery({name: "limit", required: false, type: Number})
+  @ApiQuery({name: "sortBy", required: false, type: String})
+  @ApiQuery({name: "sortType", required: false, type: String})
+  @ApiQuery({name: "search", required: false, type: String})
   public async get(
     @Pagination() pagination: PaginationDto
   ) {
@@ -37,12 +37,12 @@ export class CategoryController {
     return await this.categoryService.create(createCategoryDto);
   }
 
-  @Delete(":id")
+  @Delete()
   @AdminRequired()
   public async delete(
-    @Param("id") id: number
+    @Body() categoriesDto: IdsDTo
   ) {
-    return await this.categoryService.delete(id);
+    return await this.categoryService.delete(categoriesDto.ids);
   }
 
   @Patch(":id")

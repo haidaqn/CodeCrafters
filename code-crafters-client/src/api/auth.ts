@@ -5,7 +5,7 @@ import axiosInstance, {endpoints} from "@/utils/axios.ts";
 //-----------------------------------------------------------------------------------------------
 
 
-export class authApi {
+export class AuthApi {
 
   static async login(loginData: LoginForm) {
     const response = await axiosInstance.post(endpoints.auth.login, loginData);

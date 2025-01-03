@@ -21,5 +21,7 @@ export type ColorConfigKey = keyof typeof ColorConfig.config;
 
 export const KeyDialogs = {
   language: 'language',
+  user: "user",
+  category: "category"
 };
 export type IKeyDialog = typeof KeyDialogs[keyof typeof KeyDialogs];

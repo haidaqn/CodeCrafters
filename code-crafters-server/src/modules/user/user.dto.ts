@@ -1,14 +1,4 @@
-import {
-  IsArray,
-  IsBoolean,
-  IsEmail,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Length,
-  Matches
-} from "class-validator";
+import {IsBoolean, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, Length, Matches} from "class-validator";
 
 export class ValidateUserDto {
   @IsNotEmpty()
@@ -115,8 +105,3 @@ export class UpdateUserDto {
   avatar?: string;
 }
 
-export class BlockUserDto {
-  @IsArray()
-  @IsNumber({}, { each: true })
-  ids: number[];
-}

@@ -1,6 +1,17 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsEnum, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, Min } from "class-validator";
-import { DIFFICULT } from "../../types";
+import {ApiProperty} from "@nestjs/swagger";
+import {
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+  Min
+} from "class-validator";
+import {DIFFICULT} from "../../types";
 
 export class CreateProblemDTO {
   @ApiProperty({
@@ -8,8 +19,8 @@ export class CreateProblemDTO {
     example: "Two Sum"
   })
   @IsString()
-  @IsNotEmpty({ message: "Title is required." })
-  @MaxLength(100, { message: "Title must not exceed 100 characters." })
+  @IsNotEmpty({message: "Title is required."})
+  @MaxLength(100, {message: "Title must not exceed 100 characters."})
   title: string;
 
   @ApiProperty({
@@ -17,7 +28,7 @@ export class CreateProblemDTO {
     example: "Given an array of integers nums and an integer target..."
   })
   @IsString()
-  @IsNotEmpty({ message: "Description is required." })
+  @IsNotEmpty({message: "Description is required."})
   description: string;
 
   @ApiProperty({
@@ -25,7 +36,7 @@ export class CreateProblemDTO {
     example: DIFFICULT.EASY,
     enum: DIFFICULT
   })
-  @IsEnum(DIFFICULT, { message: "Difficulty must be one of the allowed values." })
+  @IsEnum(DIFFICULT, {message: "Difficulty must be one of the allowed values."})
   difficult: DIFFICULT;
 
   @ApiProperty({
@@ -33,7 +44,7 @@ export class CreateProblemDTO {
     example: 1.0
   })
   @IsNumber()
-  @Min(1, { message: "Time limit must be greater than 1s" })
+  @Min(1, {message: "Time limit must be greater than 1s"})
   timeLimit: number;
 
   @ApiProperty({
@@ -41,7 +52,7 @@ export class CreateProblemDTO {
     example: 5
   })
   @IsInt()
-  @IsNotEmpty({ message: "Category ID is required." })
+  @IsNotEmpty({message: "Category ID is required."})
   categoryID: number;
 
   @ApiProperty({
@@ -49,7 +60,7 @@ export class CreateProblemDTO {
     example: 100
   })
   @IsInt()
-  @Min(1, { message: "Points must be at least 1." })
+  @Min(1, {message: "Points must be at least 1."})
   points: number;
 }
 
@@ -61,7 +72,7 @@ export class UpdateProblemDTO {
   })
   @IsOptional()
   @IsString()
-  @MaxLength(100, { message: "Title must not exceed 100 characters." })
+  @MaxLength(100, {message: "Title must not exceed 100 characters."})
   title?: string;
 
   @ApiProperty({
@@ -80,7 +91,7 @@ export class UpdateProblemDTO {
     required: false
   })
   @IsOptional()
-  @IsEnum(DIFFICULT, { message: "Difficulty must be one of the allowed values." })
+  @IsEnum(DIFFICULT, {message: "Difficulty must be one of the allowed values."})
   difficult?: DIFFICULT;
 
   @ApiProperty({
@@ -90,7 +101,7 @@ export class UpdateProblemDTO {
   })
   @IsOptional()
   @IsNumber()
-  @Min(0.1, { message: "Time limit must be greater than 0." })
+  @Min(0.1, {message: "Time limit must be greater than 0."})
   timeLimit?: number;
 
   @ApiProperty({
@@ -99,8 +110,19 @@ export class UpdateProblemDTO {
     required: false
   })
   @IsOptional()
-  @IsInt()
-  categoryID?: number;
+  @IsArray()
+  @IsInt({each: true})
+  categoryIDs?: number[];
+
+  @ApiProperty({
+    description: "The ID of the contest this problem belongs to",
+    example: 5,
+    required: false
+  })
+  @IsOptional()
+  @IsArray()
+  @IsInt({each: true})
+  contestIDs?: number[];
 
   @ApiProperty({
     description: "The points awarded for solving the problem",
@@ -109,7 +131,7 @@ export class UpdateProblemDTO {
   })
   @IsOptional()
   @IsInt()
-  @Min(1, { message: "Points must be at least 1." })
+  @Min(1, {message: "Points must be at least 1."})
   points?: number;
 
   @ApiProperty({

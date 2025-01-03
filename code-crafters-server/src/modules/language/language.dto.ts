@@ -1,10 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsBoolean, IsNotEmpty, MaxLength, IsOptional } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class CreateLanguageDTO {
   @ApiProperty({
     description: "The name of the programming language",
-    example: "Python",
+    example: "Python"
   })
   @IsString()
   @IsNotEmpty({ message: "Language name is required." })
@@ -13,7 +13,7 @@ export class CreateLanguageDTO {
 
   @ApiProperty({
     description: "The version of the programming language",
-    example: "3.10.2",
+    example: "3.10.2"
   })
   @IsString()
   @IsNotEmpty({ message: "Version is required." })
@@ -23,7 +23,7 @@ export class CreateLanguageDTO {
   @ApiProperty({
     description: "Whether the language is activated",
     example: true,
-    default: false,
+    default: true
   })
   @IsBoolean()
   @IsOptional()
@@ -34,7 +34,7 @@ export class UpdateLanguageDTO {
   @ApiProperty({
     description: "The name of the programming language",
     example: "Python",
-    required: false,
+    required: false
   })
   @IsOptional()
   @IsString()
@@ -44,7 +44,7 @@ export class UpdateLanguageDTO {
   @ApiProperty({
     description: "The version of the programming language",
     example: "3.10.2",
-    required: false,
+    required: false
   })
   @IsOptional()
   @IsString()
@@ -54,7 +54,7 @@ export class UpdateLanguageDTO {
   @ApiProperty({
     description: "Whether the language is activated",
     example: true,
-    required: false,
+    required: false
   })
   @IsOptional()
   @IsBoolean()

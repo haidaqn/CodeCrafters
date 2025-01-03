@@ -1,12 +1,12 @@
-import { Injectable } from "@nestjs/common";
-import { ESortType, PaginationDto } from "../../types";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { LoggerService } from "../../logger";
-import { Category } from "./category.entity";
-import { CategoryDto } from "./category.dto";
-import { Messages } from "../../config";
-import { CacheService } from "../cache";
+import {Injectable} from "@nestjs/common";
+import {ESortType, PaginationDto} from "../../types";
+import {InjectRepository} from "@nestjs/typeorm";
+import {In, Repository} from "typeorm";
+import {LoggerService} from "../../logger";
+import {Category} from "./category.entity";
+import {CategoryDto} from "./category.dto";
+import {Messages} from "../../config";
+import {CacheService} from "../cache";
 
 
 @Injectable()
@@ -21,7 +21,7 @@ export class CategoryService {
 
   async list(paginationDto: PaginationDto) {
     try {
-      const { page = 1, limit = 10, sortBy = "createdAt", sortType = ESortType.DESC, search } = paginationDto;
+      const {page = 1, limit = 10, sortBy = "createdAt", sortType = ESortType.DESC, search} = paginationDto;
 
       const cacheKey = `categories:${page}:${limit}:${sortBy}:${sortType}:${search}`;
 
@@ -31,7 +31,7 @@ export class CategoryService {
         const query = this.categoryRepository.createQueryBuilder("category");
 
         if (search) {
-          query.andWhere("category.name LIKE :search", { search: `%${search}%` });
+          query.andWhere("category.name LIKE :search", {search: `%${search}%`});
         }
 
         if (![ESortType.ASC, ESortType.DESC].includes(sortType)) {
@@ -66,7 +66,7 @@ export class CategoryService {
       throw new Error(Messages.category.categoryNameInvalid);
     }
 
-    const categoryNew = this.categoryRepository.create({ name: createCategoryDto.name });
+    const categoryNew = this.categoryRepository.create({name: createCategoryDto.name});
 
     if (!categoryNew) {
       throw new Error(Messages.common.somethingWentWrong);
@@ -83,14 +83,12 @@ export class CategoryService {
 
   }
 
-  async delete(id: number) {
-    const categoryOld = await this.findCategoryByID(id);
-
-    if (!categoryOld) {
-      new Error(Messages.category.categoryNotFound);
+  async delete(ids: number[]) {
+    const categories = await this.categoryRepository.find({where: {id: In(ids)}});
+    if (!categories) {
+      throw new Error(Messages.category.categoryNotFound);
     }
-
-    await this.categoryRepository.remove(categoryOld);
+    await this.categoryRepository.remove(categories);
     await this.cache.delByPattern("categories:*");
     return {
       message: Messages.category.categoryDeleted
@@ -122,7 +120,7 @@ export class CategoryService {
 
   private async findCategoryByName(name: string) {
     try {
-      return await this.categoryRepository.findOne({ where: { name } });
+      return await this.categoryRepository.findOne({where: {name}});
     } catch (error: any) {
       this.logger.error(error.message);
     }
@@ -130,7 +128,7 @@ export class CategoryService {
 
   async findCategoryByID(id: number) {
     try {
-      return await this.categoryRepository.findOne({ where: { id } });
+      return await this.categoryRepository.findOne({where: {id}});
     } catch (error: any) {
       this.logger.error(error.message);
     }

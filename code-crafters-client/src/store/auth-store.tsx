@@ -2,7 +2,7 @@
 
 import {create} from 'zustand';
 import {devtools, persist} from 'zustand/middleware';
-import {authApi} from '@/api/authApi';
+import {AuthApi} from '@/api/auth.ts';
 import {toast} from 'sonner';
 import {isErrorResponse} from '@/lib/utils';
 import {LoginForm, RegisterForm, Tokens, User} from "@/interfaces";
@@ -30,7 +30,7 @@ const useAuthStore = create<AuthState>()(
         login: async (loginData: LoginForm, navigate: (path: string) => void) => {
           set({loading: true});
           try {
-            const response = await authApi.login(loginData);
+            const response = await AuthApi.login(loginData);
             set({
               user: response.data.user,
               tokens: response.data.tokens,
@@ -50,7 +50,7 @@ const useAuthStore = create<AuthState>()(
         register: async (registerData: RegisterForm, navigate: (path: string) => void) => {
           set({loading: true});
           try {
-            const {data} = await authApi.register(registerData);
+            const {data} = await AuthApi.register(registerData);
             toast.success(data.message)
             navigate(`/auth/verify?email=${registerData.email}&src=registration`);
           } catch (error: any) {

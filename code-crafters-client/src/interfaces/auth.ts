@@ -38,6 +38,7 @@ export interface User {
   totalSolved: boolean
   role: RoleInApp
   googleId?: string
+  isBlocked: boolean
 }
 
 export interface ChangePasswordForm {

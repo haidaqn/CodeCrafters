@@ -2,6 +2,7 @@ import useAuthStore from "@/store/auth-store.tsx";
 import React, {useEffect, useState} from "react";
 import {usePathname, useRouter} from "next/navigation";
 import {RoleInApp} from "@/interfaces";
+import axiosInstance from "@/utils/axios.ts";
 
 type Props = {
   children: React.ReactNode;
@@ -14,6 +15,10 @@ export default function AdminProtect({children}: Props) {
   const pathname = usePathname();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
+
+  if (tokens?.access_token) {
+    axiosInstance.defaults.headers['Authorization'] = `Bearer ${tokens?.access_token}`;
+  }
 
   useEffect(() => {
     // Wait for auth data to be loaded from localStorage

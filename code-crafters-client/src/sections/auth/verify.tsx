@@ -14,7 +14,7 @@ import {InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot} from "@/compon
 import {CountdownTimer} from "@/components/ui/countdown-timer";
 import ReCAPTCHA from "react-google-recaptcha";
 import {appConfig} from "@/config";
-import {authApi} from "@/api/authApi.ts";
+import {AuthApi} from "@/api/auth.ts";
 import {useRouter, useSearchParams} from "@/routes";
 import {toast} from "sonner";
 
@@ -26,6 +26,7 @@ export default function VerifySection() {
   const searchParams = useSearchParams();
   const router = useRouter()
 
+  // @ts-ignore
   const email = searchParams.get('email');
 
   type VerifySchemaType = z.infer<typeof VerifySchema>
@@ -47,7 +48,7 @@ export default function VerifySection() {
   const handleVerify: SubmitHandler<VerifySchemaType> = async (data) => {
     const {email, code} = form.getValues();
     if (!code) return;
-    await authApi.verifyEmail({email, code}).then((response: any) => {
+    await AuthApi.verifyEmail({email, code}).then((response: any) => {
       toast.success(response.data.message);
       router.push('/auth/login')
     }).catch((error: any) => {
@@ -62,7 +63,7 @@ export default function VerifySection() {
 
     if (!captcha) return;
 
-    authApi.resendEmail({email, captcha}).then((response: any) => {
+    AuthApi.resendEmail({email, captcha}).then((response: any) => {
       toast.success(response.data.message);
       setIsTimerEnded(false)
     }).catch((error: any) => {

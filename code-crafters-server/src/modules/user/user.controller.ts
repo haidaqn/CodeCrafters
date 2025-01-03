@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
-import { UserService } from "./user.service";
-import { BlockUserDto, UpdateUserDto } from "./user.dto";
-import { PaginationDto } from "src/types/paging";
-import { ApiBearerAuth, ApiQuery } from "@nestjs/swagger";
-import { JwtAuthGuard } from "../../auth";
-import { AdminRequired } from "./decorators/permission.decorator";
+import {Body, Controller, Get, Param, Patch, Post, Query, UseGuards} from "@nestjs/common";
+import {UserService} from "./user.service";
+import {UpdateUserDto} from "./user.dto";
+import {PaginationDto} from "src/types/paging";
+import {ApiBearerAuth, ApiQuery} from "@nestjs/swagger";
+import {JwtAuthGuard} from "../../auth";
+import {AdminRequired} from "./decorators/permission.decorator";
+import {IdsDTo} from "../../types";
 
 @Controller("api/v1/users")
 @ApiBearerAuth()
@@ -32,18 +33,18 @@ export class UserController {
 
   @Post("block")
   public async block(
-    @Body() blockUserDto: BlockUserDto
+    @Body() blockUserDto: IdsDTo
   ) {
     return await this.userService.block(blockUserDto.ids);
   }
 
   @Get()
   @AdminRequired()
-  @ApiQuery({ name: "page", required: false, type: String })
-  @ApiQuery({ name: "limit", required: false, type: String })
-  @ApiQuery({ name: "sortBy", required: false, type: String })
-  @ApiQuery({ name: "sortType", required: false, type: String })
-  @ApiQuery({ name: "search", required: false, type: String })
+  @ApiQuery({name: "page", required: false, type: String})
+  @ApiQuery({name: "limit", required: false, type: String})
+  @ApiQuery({name: "sortBy", required: false, type: String})
+  @ApiQuery({name: "sortType", required: false, type: String})
+  @ApiQuery({name: "search", required: false, type: String})
   public async list(
     @Query() paginationDto: PaginationDto
   ) {

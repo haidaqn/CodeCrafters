@@ -13,7 +13,7 @@ import {useState} from "react";
 import {Icons} from "@/components/ui/icons.tsx";
 import {toast} from "sonner";
 import {useRouter} from "@/routes";
-import {authApi} from "@/api/authApi.ts";
+import {AuthApi} from "@/api/auth.ts";
 
 //-----------------------------------------------------------------------------------------------
 
@@ -33,7 +33,7 @@ export default function ForgotSection() {
   const handleForgot: SubmitHandler<ForgotSchemaType> = async (data) => {
     setIsLoading(true)
     try {
-      const res = await authApi.forgotPassword(data.email) as any
+      const res = await AuthApi.forgotPassword(data.email) as any
       toast.success(res?.data.message || "New password has been sent to your email please check!");
       form.reset();
       router.push('/auth/login');

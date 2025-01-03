@@ -2,6 +2,7 @@ import {ColumnDef} from '@tanstack/react-table';
 import {Checkbox} from '@/components/ui/checkbox.tsx';
 import {DataTableColumnHeader} from '@/components/common/data-table/data-table-column-header.tsx';
 import {User} from "@/interfaces";
+import {UserHandle} from "@/sections/admin/manager-user/table/user-handle.tsx";
 
 export const userColumns: ColumnDef<User>[] = [
   {
@@ -86,5 +87,9 @@ export const userColumns: ColumnDef<User>[] = [
     cell: ({row}) => <div className="w-[50px] font-bold">{row.getValue('isBlocked') ?
       <span className='text-red-500'>Blocked</span> :
       <span className='text-green-500'>Active</span>}</div>,
+  },
+  {
+    id: 'actions',
+    cell: ({row}) => (<UserHandle row={row}/>),
   },
 ]

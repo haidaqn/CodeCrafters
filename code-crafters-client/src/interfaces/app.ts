@@ -1,4 +1,8 @@
-import {Table} from "@tanstack/react-table";
+import {Row, Table} from "@tanstack/react-table";
+import {ParsedQuery} from "query-string";
+import {UseQueryOptions} from "@tanstack/react-query";
+import {SuccessResponse} from "@/interfaces/api-responsive.ts";
+import {Language} from "@/interfaces/language.ts";
 
 export enum DialogActionType {
   CREATE = 'create',
@@ -21,4 +25,15 @@ export interface DataTableToolbarProps<TData> {
 export interface IMutation {
   handleSuccess?: () => void,
   handleError?: () => void;
+}
+
+type UseLanguageOptions<T> = Omit<UseQueryOptions<SuccessResponse<T>>, 'queryFn' | 'queryKey'>
+
+export interface IUseQuery<T> {
+  options?: UseLanguageOptions<T>,
+  queryParam: ParsedQuery
+}
+
+export interface RowActionsProps<T>{
+  row: Row<T>;
 }
